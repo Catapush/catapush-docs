@@ -5,26 +5,24 @@
 ## Index
 
 *   [Catapush 10.2.x](#catapush10.2.x)
-    *   [Project pre-requisites](#project-pre-requisites)
-    *   [Core module](#core-module)
-        *   [Include the Core module as a dependency](#include-the-core-module-as-a-dependency)
-        *   [Update your app AndroidManifest.xml](#update-your-app-androidmanifest.xml)
-            *   [Catapush app key](#catapush-app-key)
-            *   [Declare a custom Catapush broadcasts receiver](#declare-a-custom-catapush-broadcasts-receiver)
-        *   [Error handling](#error-handling)
-        *   [Initialization](#initialization)
-        *   [RxJava catch-all error handler](#rxjavacatchall)
-        *   [Start](#start)
-    *   [Google Mobile Services (GMS) module](#gms-module)
-        *   [Firebase Cloud Messaging prerequisites](#firebase-cloud-messaging-prerequisites)
-        *   [Include the GMS module as a dependency](#include-the-gms-module-as-a-dependency)
-        *   [Google Mobile Services Gradle plugin configuration](#google-mobile-services-gradle-plugin-configuration)
-        *   [Update your Catapush initialization to use the GMS module](#update-your-catapush-initialization-to-use-the-gms-module)
-    *   [Huawei Mobile Services (HMS) module](#hms-module)
-        *   [Huawei Push Kit prerequisites](#Huawei-Push-Kit-prerequisites)
-        *   [Include the HMS module as a dependency](#include-the-hms-module-as-a-dependency)
-        *   [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)
-        *   [Update your Catapush initialization to use the HMS module](#update-your-catapush-initialization-to-use-the-hms-module)
+*   [Project prerequisites](#project-pre-requisites)
+*   [Core module](#core-module)
+    *   [Include the Core module as a dependency](#include-the-core-module-as-a-dependency)
+    *   [Update your app AndroidManifest.xml](#update-your-app-androidmanifest.xml)
+    *   [Error handling](#error-handling)
+    *   [Initialization](#initialization)
+    *   [RxJava catch-all error handler](#rxjavacatchall)
+    *   [Start](#start)
+*   [Google Mobile Services (GMS) module](#gms-module)
+    *   [Firebase Cloud Messaging prerequisites](#firebase-cloud-messaging-prerequisites)
+    *   [Include the GMS module as a dependency](#include-the-gms-module-as-a-dependency)
+    *   [Google Mobile Services Gradle plugin configuration](#google-mobile-services-gradle-plugin-configuration)
+    *   [Update your Catapush initialization to use the GMS module](#update-your-catapush-initialization-to-use-the-gms-module)
+*   [Huawei Mobile Services (HMS) module](#huawei-mobile-services-hms-module)
+    *   [Huawei Push Kit prerequisites](#Huawei-Push-Kit-prerequisites)
+    *   [Include the HMS module as a dependency](#include-the-hms-module-as-a-dependency)
+    *   [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)
+    *   [Update your Catapush initialization to use the HMS module](#update-your-catapush-initialization-to-use-the-hms-module)
 *   [Advanced](#advanced)
     *   [Notification management](#notification-management)
     *   [Disable Push Notification Visualization](#disable-push-notification-visualization)
@@ -53,21 +51,21 @@ The available modules are:
 *   `hms` the integration of Catapush SDK with Huawei Mobile Services / Push Kit (starting from version 10.2.10)
 *   `ui` the Catapush UI Components
 
-### [Project prerequisites](#project-pre-requisites)
+## [Project prerequisites](#project-pre-requisites)
 
 Catapush Android SDK assumes that your project:  
 
 1.  Targets Android 10.0 (API level 29)
 2.  It's been migrated from Android Support Library to Android Jetpack (AndroidX) If not, please refer to the [official guide](https://developer.android.com/jetpack/androidx/migrate).
 
-#### [Core module](#core-module)
+### [Core module](#core-module)
 
 Catapush core is the main module of our SDK, it allows your app to send and receive messages while it’s in foreground.
 
 To enable messages background delivery (i.e. when the device is in stand-by) you’ll need a push notification service plugin.  
 See the Catapush GMS module or the Catapush HMS module or both.
 
-##### [Include the Core module as a dependency](#include-the-core-module-as-a-dependency)
+#### [Include the Core module as a dependency](#include-the-core-module-as-a-dependency)
 
 At the top of _app/build.gradle_, before the _android_ block, add the Jitpack repository to the _repositories_ section:
 
@@ -83,19 +81,17 @@ Then, in the dependencies block, add a new implementation:
 implementation('com.catapush.catapush-android-sdk:core:10.2.10')
 ```
 
-##### [Update your app AndroidManifest.xml](#update-your-app-androidmanifest.xml)
+#### [Update your app AndroidManifest.xml](#update-your-app-androidmanifest.xml)
 
-###### [Catapush app key](#catapush-app-key)
-
-Declare this meta-data inside the application node of your AndroidManifest.xml
+Set your Catapush app key declaring this meta-data inside the application node of your AndroidManifest.xml
 ```xml
 <meta-data
     android:name="com.catapush.library.APP_KEY"
     android:value="YOUR_APP_KEY" />
 ```
-_YOUR_APP_KEY_ is the _AppKey_ of your Catapush App (go to your [Catapush App configuration dashboard](/panel/dashboard), select your App by clicking "View Panel" and then click on App details section)
+_YOUR_APP_KEY_ is the _AppKey_ of your Catapush App (go to your [Catapush App configuration dashboard](https://www.catapush.com/panel/dashboard), select your App by clicking "View Panel" and then click on App details section)
 
-###### [Declare a custom Catapush broadcasts receiver](#declare-a-custom-catapush-broadcasts-receiver)
+Then you need to declare a custom Catapush broadcast receiver and a permission to secure its broadcasts.
 
 Add this permission definition in your `AndroidManifest.xml`:
 ```xml
@@ -127,7 +123,7 @@ Then, in the `<application>` block add this receiver:
 </receiver>
 ```
 
-##### [Create the custom Catapush broadcasts receiver](#create-the-custom-catapush-broadcasts-receiver)
+#### [Create the custom Catapush broadcasts receiver](#create-the-custom-catapush-broadcasts-receiver)
 
 To communicate with Catapush, you can extend `CatapushReceiver` or `CatapushTwoWayReceiver` and implement the needed methods. You can copy/paste the following class:
 ```java
@@ -195,7 +191,7 @@ public class MyReceiver extends CatapushTwoWayReceiver {
 }
 ```
 
-##### [Error handling](#error-handling)
+#### [Error handling](#error-handling)
 
 Through your CatapushReceiver callbacks you may receive the following error codes:
 
@@ -333,7 +329,7 @@ The `onRegistrationFailed(CatapushAuthenticationError error, Context context)` c
 
 </table>
 
-##### [Initialization](#initialization)
+#### [Initialization](#initialization)
 
 You must initialize Catapush in your class that extends `Application`.
 
@@ -432,7 +428,7 @@ If you are defining a custom application class for your app for the first time, 
 
 Please note that, to be used, the `MultiDexApplication` requires your app to depend on the `androidx.multidex:multidex` dependency.
 
-##### [RxJava catch-all error handler](#rxjavacatchall)
+#### [RxJava catch-all error handler](#rxjavacatchall)
 
 Catapush depends internally on RxJava. Since RxJava2 it's required for the app that includes the SDK to define a global error handler that prevents your app from crashing if any unhandleable error occurs in the library.
 
@@ -471,7 +467,7 @@ private void setupRxErrorHandler() {
 
 See RxJava official docs [What's different in 2.0 - error handling](https://github.com/ReactiveX/RxJava/wiki/What's-different-in-2.0#error-handling) for more information.
 
-##### [Start](#start)
+#### [Start](#start)
 
 Catapush setup is complete.  
 Whenever you want to start using Catapush, you just need to call the `start` method. For instance, in your main `Activity`, after your user has logged in, you can use the following code to start Catapush:
@@ -502,11 +498,11 @@ The start callback provides you 3 methods: `success` and `failure` are self-expl
 The `warning` method is used to notify you when the Catapush SDK identifies potential problems in the user device settings that might hinder your delivery reliability in some scenarios.  
 You can ignore those warning but we suggest you to guide your users through the necessary reconfiguration steps.
 
-#### [Google Mobile Services (GMS) module](#gms-module)
+### [Google Mobile Services (GMS) module](#gms-module)
 
 Catapush gms module is the integration of the SDK with Google Mobile Services / Firebase Cloud Messaging, it allows your app to send and receive messages while it’s in background on devices with Google Play Services installed.
 
-##### [Firebase Cloud Messaging prerequisites](#Firebase-Cloud-Messaging-prerequisites)
+#### [Firebase Cloud Messaging prerequisites](#Firebase-Cloud-Messaging-prerequisites)
 
 The Catapush GMS module needs Firebase to work.  
 
@@ -515,7 +511,7 @@ The Catapush GMS module needs Firebase to work.
 3. Go to your Catapush App configuration dashboard and select your app by clicking "View Panel"
 4. In Platforms section add your service-account.json to your Android configuration
 
-##### [Include the GMS module as a dependency](#include-the-gms-module-as-a-dependency)
+#### [Include the GMS module as a dependency](#include-the-gms-module-as-a-dependency)
 
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
@@ -523,7 +519,7 @@ In your `app/build.gradle`, in the dependencies block, add a new implementation:
 implementation('com.catapush.catapush-android-sdk:gms:10.2.10')
 ```
 
-##### [Google Mobile Services Gradle plugin configuration](#google-mobile-services-gradle-plugin-configuration)
+#### [Google Mobile Services Gradle plugin configuration](#google-mobile-services-gradle-plugin-configuration)
 
 The Google Mobile Services plugin for Gradle parses the configuration information from the google-services.json file and sets up its client libraries for you.
 
@@ -554,7 +550,7 @@ Finally, add this metadata tag to this `<application>` block in your `AndroidMan
     android:value="@integer/google_play_services_version" />
 ```
 
-##### [Update your Catapush initialization to use the GMS module](#update-your-catapush-initialization-to-use-the-gms-module)
+#### [Update your Catapush initialization to use the GMS module](#update-your-catapush-initialization-to-use-the-gms-module)
 
 In your Application.onCreate() method add the CatapushGMS.INSTANCE to the SDK init:
 
@@ -567,10 +563,10 @@ Catapush.getInstance().init(
 );
 ```
 
-#### [Huawei Mobile Services (HMS) module](#hms-module)
+### [Huawei Mobile Services (HMS) module](#huawei-mobile-services-hms-module)
 Catapush hms module is the integration of the SDK with Huawei Mobile Services / Push Kit, it allows your app to send and receive messages while it’s in background on Huawei devices.
 
-##### [Huawei Push Kit prerequisites](#Huawei-Push-Kit-prerequisites)
+#### [Huawei Push Kit prerequisites](#Huawei-Push-Kit-prerequisites)
 The Catapush HMS module needs Huawei Push Kit to work.
 1. Create a new project in Huawei AppGallery Connect
 2. Navigate to "Project settings" from the menu on the left and select the "Manage APIs" tab.
@@ -580,14 +576,14 @@ The Catapush HMS module needs Huawei Push Kit to work.
 4. Open the Catapush App configuration dashboard, select your app name from the menu and then select "Platforms" section
 5. Paste the `App ID` and `App secret` values in the corresponding fields<br/>![](images/platform_huawei.png)  
 
-##### [Include the HMS module as a dependency](#include-the-hms-module-as-a-dependency)
+#### [Include the HMS module as a dependency](#include-the-hms-module-as-a-dependency)
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
 implementation('com.catapush.catapush-android-sdk:hms:10.2.10')
 ```
 
-##### [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)
+#### [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)
 The Huawei Mobile Services plugin for Gradle parses the configuration information from the `agconnect-services.json` file and sets up its client libraries for you.
 Add the plugin to your project by updating your project build.gradle file as follows:
 
@@ -611,7 +607,7 @@ And, at the top of your `app/build.gradle` file, add the following line:
 apply plugin: 'com.huawei.agconnect'
 ```
 
-##### [Update your Catapush initialization to use the HMS module](#update-your-catapush-initialization-to-use-the-hms-module)
+#### [Update your Catapush initialization to use the HMS module](#update-your-catapush-initialization-to-use-the-hms-module)
 In your `Application.onCreate()` method add the `CatapushGMS.INSTANCE` to the SDK init:
 
 ```java
@@ -725,7 +721,7 @@ Catapush.getInstance().notifyMessageOpened(catapushMessage.id());
 
 ### [Catapush conversation channels feature](#catapush-conversation-channels-feature)
 
-Since Catapush SDK for Android 10.0.0 you can deliver messages through different conversation channels. To send a message to a specific channel please see the [“channel” property of our send message API endpoint](/docs-api?php#2.1-post---send-a-new-message) and [its description](/docs-api?php#channels). You can list conversation channels, query messages from a specific channel or messages without channel. Please note that messages received with previous versions of the Catapush SDK and messages sent without channel are grouped in a default conversation channel identified by an empty string.
+Since Catapush SDK for Android 10.0.0 you can deliver messages through different conversation channels. To send a message to a specific channel please see the [“channel” property of our send message API endpoint](https://www.catapush.com/docs-api?php#2.1-post---send-a-new-message) and [its description](https://www.catapush.com/docs-api?php#channels). You can list conversation channels, query messages from a specific channel or messages without channel. Please note that messages received with previous versions of the Catapush SDK and messages sent without channel are grouped in a default conversation channel identified by an empty string.
 
 #### [List conversation channels](#list-conversation-channels)
 
@@ -844,7 +840,7 @@ The user will have to find and tap your app, then choose "Don't optimize".
 
 ## [Advanced UI](#advanced-ui)
 
-You can customize the colors and the appereace of the notifications, we have create a [dedicated guide](/docs-android-3) for it.
+You can customize the colors and the appereace of the notifications, we have create a [dedicated guide](https://www.catapush.com/docs-android-3) for it.
 
 ## [FAQ](#FAQ)
 
