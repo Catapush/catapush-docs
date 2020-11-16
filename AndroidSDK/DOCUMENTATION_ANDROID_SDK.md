@@ -531,7 +531,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.2'
+        classpath 'com.android.tools.build:gradle:4.1.1'
         classpath 'com.google.gms:google-services:4.3.4' 
     }
 }
@@ -595,8 +595,8 @@ buildscript {
         maven { url 'https://developer.huawei.com/repo/' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.2'
-        classpath 'com.huawei.agconnect:agcp:1.4.0.100' 
+        classpath 'com.android.tools.build:gradle:4.1.1'
+        classpath 'com.huawei.agconnect:agcp:1.4.2.201' 
     }
 }
 ```
