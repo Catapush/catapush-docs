@@ -13,7 +13,7 @@
     *   [Initialization](#initialization)
     *   [RxJava catch-all error handler](#rxjavacatchall)
     *   [Start](#start)
-*   [Google Mobile Services (GMS) module](#gms-module)
+*   [Google Mobile Services (GMS) module](#Google-Mobile-Services-GMS-module)
     *   [Firebase Cloud Messaging prerequisites](#firebase-cloud-messaging-prerequisites)
     *   [Include the GMS module as a dependency](#include-the-gms-module-as-a-dependency)
     *   [Google Mobile Services Gradle plugin configuration](#google-mobile-services-gradle-plugin-configuration)
@@ -498,18 +498,23 @@ The start callback provides you 3 methods: `success` and `failure` are self-expl
 The `warning` method is used to notify you when the Catapush SDK identifies potential problems in the user device settings that might hinder your delivery reliability in some scenarios.  
 You can ignore those warning but we suggest you to guide your users through the necessary reconfiguration steps.
 
-### [Google Mobile Services (GMS) module](#gms-module)
+### [Google Mobile Services (GMS) module](#Google-Mobile-Services-GMS-module)
 
-Catapush gms module is the integration of the SDK with Google Mobile Services / Firebase Cloud Messaging, it allows your app to send and receive messages while it’s in background on devices with Google Play Services installed.
+Catapush GMS module is the integration of the SDK with Google Mobile Services / Firebase Cloud Messaging, it allows your app to send and receive messages while it’s in background on devices with Google Play Services installed.
 
 #### [Firebase Cloud Messaging prerequisites](#Firebase-Cloud-Messaging-prerequisites)
 
-The Catapush GMS module needs Firebase to work.  
+The Catapush GMS module needs a Firebase project to work.
 
-1. Create a new Project in Firebase Console and obtain your Server Key and your Sender ID
-2. Save your google-services.json file in your app/ folder
-3. Go to your Catapush App configuration dashboard and select your app by clicking "View Panel"
-4. In Platforms section add your service-account.json to your Android configuration
+Please see the [FCM configuration guide](DOCUMENTATION_PLATFORM_GMS_FCM.md) to learn how to configure your Firebase project and your Catapush Dashboard.
+
+Once you have completed all the steps above proceed with this configuration:
+
+1. Open the [Firebase Console](https://console.firebase.google.com) and select your project
+2. Click on the gear icon and select "Project settings"
+3. In the "General" tab scroll down to the "Your apps" section
+4. Select your Android app then click on the "google-services.json" download button
+5. Copy the `google-services.json` file you have just downloaded in the `/app` subfolder of your Android Studio app project
 
 #### [Include the GMS module as a dependency](#include-the-gms-module-as-a-dependency)
 
@@ -521,7 +526,7 @@ implementation('com.catapush.catapush-android-sdk:gms:10.2.10')
 
 #### [Google Mobile Services Gradle plugin configuration](#google-mobile-services-gradle-plugin-configuration)
 
-The Google Mobile Services plugin for Gradle parses the configuration information from the google-services.json file and sets up its client libraries for you.
+The Google Mobile Services plugin for Gradle parses the configuration information from the `google-services.json` file and sets up its client libraries for you.
 
 Add the plugin to your project by updating your project `build.gradle` file as follows:
 ```groovy
@@ -552,7 +557,7 @@ Finally, add this metadata tag to this `<application>` block in your `AndroidMan
 
 #### [Update your Catapush initialization to use the GMS module](#update-your-catapush-initialization-to-use-the-gms-module)
 
-In your Application.onCreate() method add the CatapushGMS.INSTANCE to the SDK init:
+In your `Application.onCreate()` method add the `CatapushGMS.INSTANCE` to the SDK init:
 
 ```java
 Catapush.getInstance().init(
@@ -564,7 +569,7 @@ Catapush.getInstance().init(
 ```
 
 ### [Huawei Mobile Services (HMS) module](#huawei-mobile-services-hms-module)
-Catapush hms module is the integration of the SDK with Huawei Mobile Services / Push Kit, it allows your app to send and receive messages while it’s in background on Huawei devices.
+Catapush HMS module is the integration of the SDK with Huawei Mobile Services / Push Kit, it allows your app to send and receive messages while it’s in background on Huawei devices.
 
 #### [Huawei Push Kit prerequisites](#Huawei-Push-Kit-prerequisites)
 The Catapush HMS module needs Huawei Push Kit to work.
