@@ -1,4 +1,4 @@
-## Firebase Cloud Messaging (FCM)
+## Google Mobile Services (GMS) and Firebase Cloud Messaging (FCM) configuration
 
 Catapush uses Firebase Cloud Messaging, the native push notification service available on GMS-enabled Android devices (Google Mobile Services), as a component of its reliable and secure message delivery system.
 
@@ -6,7 +6,7 @@ These instructions will guide you on how to setup your Firebase project and your
 
 <br/>
 
-**1** - Visit [console.firebase.google.com](https://console.firebase.google.com) page and click "Create a project"/"Add project", then type a project name and choose a country/region
+**1** - Visit [console.firebase.google.com](https://console.firebase.google.com) and click "Create a project"/"Add project", then type a project name and choose a country/region
 
 ![Firebase Console](images/gms_fcm_step1.png)
 
@@ -39,7 +39,7 @@ Securely store the JSON file containing the key.
 ![Service account](images/gms_fcm_step7.png)
 
 **8** - Visit [www.catapush.com/panel/dashboard](https://www.catapush.com/panel/dashboard) and login with your Catapush credentials.<br/>
-Select your app from the side menu and select "Platforms".
+Select your app from the side menu and select "Platforms".<br/>
 Enable "Use Service Account JSON", then select the file you downloaded at the previous step. Press "Save".
 
 ![Catapush dashboard, configuring platform](images/gms_fcm_step8.png)

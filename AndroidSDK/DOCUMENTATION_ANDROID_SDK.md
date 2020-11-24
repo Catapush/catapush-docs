@@ -573,13 +573,14 @@ Catapush HMS module is the integration of the SDK with Huawei Mobile Services / 
 
 #### [Huawei Push Kit prerequisites](#Huawei-Push-Kit-prerequisites)
 The Catapush HMS module needs Huawei Push Kit to work.
-1. Create a new project in Huawei AppGallery Connect
-2. Navigate to "Project settings" from the menu on the left and select the "Manage APIs" tab.
-3. Scroll down the list, find "Push Kit" and enable it
-4. Select the "General information" tab and scroll down to take note of the `App ID` and `App secret` values<br/>![](images/appgallery_connect_app_information.png)
-3. Download the `agconnect-services.json` file and save it in your `app/` folder
-4. Open the Catapush App configuration dashboard, select your app name from the menu and then select "Platforms" section
-5. Paste the `App ID` and `App secret` values in the corresponding fields<br/>![](images/platform_huawei.png)  
+
+Please see the [HMS configuration guide](DOCUMENTATION_PLATFORM_HMS_PUSHKIT.md) to learn how to configure your Huawei AppGallery project and your Catapush Dashboard.
+
+Once you have completed all the steps above proceed with this configuration:
+
+1. Visit Huawei AppGallery Connect and select your project
+2. Navigate to "Project settings" from the menu on the left and select the "General information" tab and scroll down to download the `agconnect-services.json` file<br/>![](images/hms_pushkit_step5.png)
+3. Move the `agconnect-services.json` file in the `app/` subfolder in your Android Studio project
 
 #### [Include the HMS module as a dependency](#include-the-hms-module-as-a-dependency)
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
@@ -590,6 +591,7 @@ implementation('com.catapush.catapush-android-sdk:hms:10.2.10')
 
 #### [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)
 The Huawei Mobile Services plugin for Gradle parses the configuration information from the `agconnect-services.json` file and sets up its client libraries for you.
+
 Add the plugin to your project by updating your project build.gradle file as follows:
 
 ```groovy
