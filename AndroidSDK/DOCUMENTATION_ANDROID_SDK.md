@@ -48,7 +48,7 @@ The available modules are:
 
 *   `core` the main Catapush SDK implementation
 *   `gms` the integration of Catapush SDK with Google Mobile Services / Firebase Cloud Messaging
-*   `hms` the integration of Catapush SDK with Huawei Mobile Services / Push Kit (starting from version 10.2.10)
+*   `hms` the integration of Catapush SDK with Huawei Mobile Services / Push Kit (starting from version 1)
 *   `ui` the Catapush UI Components
 
 ## [Project prerequisites](#project-pre-requisites)
@@ -78,7 +78,7 @@ repositories {
 Then, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:core:10.2.10')
+implementation('com.catapush.catapush-android-sdk:core:10.2.11')
 ```
 
 #### [Update your app AndroidManifest.xml](#update-your-app-androidmanifest.xml)
@@ -521,7 +521,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:gms:10.2.10')
+implementation('com.catapush.catapush-android-sdk:gms:10.2.11')
 ```
 
 #### [Google Mobile Services Gradle plugin configuration](#google-mobile-services-gradle-plugin-configuration)
@@ -586,7 +586,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms:10.2.10')
+implementation('com.catapush.catapush-android-sdk:hms:10.2.11')
 ```
 
 #### [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)

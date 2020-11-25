@@ -36,6 +36,11 @@ To include the Catapush UI Components just add the `ui` module to your app by de
 implementation('com.catapush.catapush-android-sdk:ui:10.2.+')
 ```
 
+#### 10.2.11 (25/11/2020)
+
+- Improved HMS / Push Kit initialization and error handling.
+- Fixed a bug that might prevent the refreshed push tokens be uploaded to Catapush.
+
 #### 10.2.10 (12/11/2020)
 
 - New feature: Huawei Mobile Services (HMS) is now officially supported.
