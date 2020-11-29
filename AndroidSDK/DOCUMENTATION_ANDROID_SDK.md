@@ -53,10 +53,11 @@ The available modules are:
 
 ## [Project prerequisites](#project-pre-requisites)
 
-Catapush Android SDK assumes that your project:  
+Catapush Android SDK assumes that your Android project:
 
-1.  Targets Android 10.0 (API level 29)
-2.  It's been migrated from Android Support Library to Android Jetpack (AndroidX) If not, please refer to the [official guide](https://developer.android.com/jetpack/androidx/migrate).
+1. Has target SDK version set to 29 ([Android 10.0](https://developer.android.com/studio/releases/platforms#10))
+2. Has minimum SDK version greater than or equal to 18 ([Android 4.3](https://developer.android.com/studio/releases/platforms#4.3))
+3. It's been migrated from Android Support Library to Android Jetpack (AndroidX) If not, please refer to the [official guide](https://developer.android.com/jetpack/androidx/migrate).
 
 ### [Core module](#core-module)
 
@@ -639,6 +640,7 @@ Catapush.getInstance().init(
 
 Please note that the order of the modules in the list will be taken into account when electing the push service to be used on a device: if both services are available and working then the Catapush SDK will pick the first in the list.
 
+<br/><br/>
 
 ## [Advanced](#advanced)
 
@@ -845,15 +847,15 @@ This list will be displayed:
 
 The user will have to find and tap your app, then choose "Don't optimize".
 
+<br/><br/>
+
 ## [Advanced UI](#advanced-ui)
 
 You can customize the colors and the appereace of the notifications, we have create a [dedicated guide](https://www.catapush.com/docs-android-3) for it.
 
+<br/><br/>
+
 ## [FAQ](#FAQ)
-
-### [Which is the minimum supported Android API?](#which-minimum-API)
-
-The Android SDK supports [Android 4.3 (API level 18)](https://developer.android.com/studio/releases/platforms#4.3) and greater. For details about Android versions distribution, you can check [Android release notes](https://developer.android.com/studio/releases/platforms).
 
 ### [What's the size of the library?](#what-size-library)
 
