@@ -36,6 +36,7 @@
     *   [Enabling optimal QoS for Silent Push notifications by ignoring Doze](#enabling-optimal-qos-for-silent-push-notifications-by-ignoring-doze)
 *   [Advanced UI](#advanced-ui)
 *   [FAQ](#FAQ)
+    *   [How does the library choose between GMS and HMS?](#how-does-the-library-choose-between-gms-and-hms)
     *   [What's the size of the library?](#whats-the-size-of-the-library)
     *   [What are battery and bandwidth usages?](#what-are-battery-and-bandwidth-usages)
     *   [There is an example project available?](#there-is-an-example-project-available)
@@ -886,6 +887,38 @@ You can customize the colors and the appereace of the notifications, we have cre
 <br/><br/>
 
 ## FAQ
+
+### How does the library choose between GMS and HMS?
+
+Catapush supports different push services providers to guarantee the delivery of messages even when your app is stopped.
+
+You can use them singularly in different app _build flavors_, or more than one at a time.
+
+If you are using more than one push services provider at a time Catapush will evaluate their availability on the device following the order you used in the initialization of the SDK.
+
+To give higher priority to GMS:
+```java
+Catapush.getInstance().init(
+        context,
+        CHANNEL_ID,
+        Arrays.asList(CatapushGms.INSTANCE, CatapushHms.INSTANCE),
+        ...
+```
+
+To give higher priority to HMS:
+```java
+Catapush.getInstance().init(
+        context,
+        CHANNEL_ID,
+        Arrays.asList(CatapushHms.INSTANCE, CatapushGms.INSTANCE),
+        ...
+```
+
+Catapush will automatically check for the push notifications services status on your app statup.
+
+If the first is not installed, not working, or not at the minumum required version Catapush will check for the availability of the second one and so on.
+
+If none of the enabled push services providers are available, the error returned by the first provider in the list will be sent to the `onPushServicesError` callback of your `CatapushReceiver` so that you'll be able to handle it.
 
 ### What's the size of the library?
 
