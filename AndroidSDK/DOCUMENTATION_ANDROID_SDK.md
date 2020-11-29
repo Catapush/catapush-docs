@@ -4,14 +4,14 @@
 
 ## Index
 
-*   [Catapush 10.2.x](#catapush10.2.x)
-*   [Project prerequisites](#project-pre-requisites)
+*   [Catapush 10.2.x](#catapush-10.2.x)
+*   [Project prerequisites](#project-prerequisites)
 *   [Core module](#core-module)
     *   [Include the Core module as a dependency](#include-the-core-module-as-a-dependency)
     *   [Update your app AndroidManifest.xml](#update-your-app-androidmanifest.xml)
     *   [Error handling](#error-handling)
     *   [Initialization](#initialization)
-    *   [RxJava catch-all error handler](#rxjavacatchall)
+    *   [RxJava catch-all error handler](#rxjava-catch-all-error-handler)
     *   [Start](#start)
 *   [Google Mobile Services (GMS) module](#Google-Mobile-Services-GMS-module)
     *   [Firebase Cloud Messaging prerequisites](#firebase-cloud-messaging-prerequisites)
@@ -25,22 +25,21 @@
     *   [Update your Catapush initialization to use the HMS module](#update-your-catapush-initialization-to-use-the-hms-module)
 *   [Advanced](#advanced)
     *   [Notification management](#notification-management)
-    *   [Disable Push Notification Visualization](#disable-push-notification-visualization)
-    *   [Pause Push Notification Visualization](#pause-push-notification-visualization)
+    *   [Disable received messages visualization](#disable-received-messages-visualization)
+    *   [Pause received messages visualization](#pause-received-messages-visualization)
     *   [Hide Notifications when User is in your Messages List](#hide-notifications-when-user-is-in-your-messages-list)
-    *   [Notification Visualization](#notification-visualization)
+    *   [Status Bar Notification](#status-bar-notification)
     *   [Sending Read Notification Receipt Manually](#sending-read-notification-receipt-manually)
     *   [Catapush conversation channels feature](#catapush-conversation-channels-feature)
     *   [Load and display messages attachment](#load-and-display-messages-attachment)
-    *   [Enabling optimal QoS for Silent Push notifications by ignoring Doze](#ignoring-battery-optimizations)
+    *   [Enabling optimal QoS for Silent Push notifications by ignoring Doze](#enabling-optimal-qos-for-silent-push-notifications-by-ignoring-doze)
 *   [Advanced UI](#advanced-ui)
 *   [FAQ](#FAQ)
-    *   [Which is the minimum supported Android API?](#which-minimum-API)
-    *   [What's the size of the library?](#what-size-library)
-    *   [What are battery and bandwidth usages?](#what-battery-usage)
-    *   [There is an example project available?](#there-is-example)
+    *   [What's the size of the library?](#whats-the-size-of-the-library)
+    *   [What are battery and bandwidth usages?](#what-are-battery-and-bandwidth-usages)
+    *   [There is an example project available?](#there-is-an-example-project-available)
 
-## [Catapush 10.2.x](#catapush10.2.x)
+## Catapush 10.2.x
 
 Catapush SDK for Android 10.2.x introduces a modularization that separates the Catapush features in different artifacts.  
 This approach gives you the ability to only include the needed modules, thus reducing the size of your dependencies and optimizing build times.  
@@ -51,7 +50,7 @@ The available modules are:
 *   `hms` the integration of Catapush SDK with Huawei Mobile Services / Push Kit (starting from version 1)
 *   `ui` the Catapush UI Components
 
-## [Project prerequisites](#project-pre-requisites)
+## Project prerequisites
 
 Catapush Android SDK assumes that your Android project:
 
@@ -59,14 +58,14 @@ Catapush Android SDK assumes that your Android project:
 2. Has minimum SDK version greater than or equal to 18 ([Android 4.3](https://developer.android.com/studio/releases/platforms#4.3))
 3. It's been migrated from Android Support Library to Android Jetpack (AndroidX) If not, please refer to the [official guide](https://developer.android.com/jetpack/androidx/migrate).
 
-### [Core module](#core-module)
+### Core module
 
 Catapush core is the main module of our SDK, it allows your app to send and receive messages while it’s in foreground.
 
 To enable messages background delivery (i.e. when the device is in stand-by) you’ll need a push notification service plugin.  
 See the Catapush GMS module or the Catapush HMS module or both.
 
-#### [Include the Core module as a dependency](#include-the-core-module-as-a-dependency)
+#### Include the Core module as a dependency
 
 At the top of _app/build.gradle_, before the _android_ block, add the Jitpack repository to the _repositories_ section:
 
@@ -82,7 +81,7 @@ Then, in the dependencies block, add a new implementation:
 implementation('com.catapush.catapush-android-sdk:core:10.2.11')
 ```
 
-#### [Update your app AndroidManifest.xml](#update-your-app-androidmanifest.xml)
+#### Update your app AndroidManifest.xml
 
 Set your Catapush app key declaring this meta-data inside the application node of your AndroidManifest.xml
 ```xml
@@ -124,7 +123,7 @@ Then, in the `<application>` block add this receiver:
 </receiver>
 ```
 
-#### [Create the custom Catapush broadcasts receiver](#create-the-custom-catapush-broadcasts-receiver)
+#### Create the custom Catapush broadcasts receiver
 
 To communicate with Catapush, you can extend `CatapushReceiver` or `CatapushTwoWayReceiver` and implement the needed methods. You can copy/paste the following class:
 ```java
@@ -192,7 +191,7 @@ public class MyReceiver extends CatapushTwoWayReceiver {
 }
 ```
 
-#### [Error handling](#error-handling)
+#### Error handling
 
 Through your CatapushReceiver callbacks you may receive the following error codes:
 
@@ -330,7 +329,7 @@ The `onRegistrationFailed(CatapushAuthenticationError error, Context context)` c
 
 </table>
 
-#### [Initialization](#initialization)
+#### Initialization
 
 You must initialize Catapush in your class that extends `Application`.
 
@@ -429,7 +428,7 @@ If you are defining a custom application class for your app for the first time, 
 
 Please note that, to be used, the `MultiDexApplication` requires your app to depend on the `androidx.multidex:multidex` dependency.
 
-#### [RxJava catch-all error handler](#rxjavacatchall)
+#### RxJava catch-all error handler
 
 Catapush depends internally on RxJava. Since RxJava2 it's required for the app that includes the SDK to define a global error handler that prevents your app from crashing if any unhandleable error occurs in the library.
 
@@ -468,7 +467,7 @@ private void setupRxErrorHandler() {
 
 See RxJava official docs [What's different in 2.0 - error handling](https://github.com/ReactiveX/RxJava/wiki/What's-different-in-2.0#error-handling) for more information.
 
-#### [Start](#start)
+#### Start
 
 Catapush setup is complete.  
 Whenever you want to start using Catapush, you just need to call the `start` method. For instance, in your main `Activity`, after your user has logged in, you can use the following code to start Catapush:
@@ -499,11 +498,11 @@ The start callback provides you 3 methods: `success` and `failure` are self-expl
 The `warning` method is used to notify you when the Catapush SDK identifies potential problems in the user device settings that might hinder your delivery reliability in some scenarios.  
 You can ignore those warning but we suggest you to guide your users through the necessary reconfiguration steps.
 
-### [Google Mobile Services (GMS) module](#Google-Mobile-Services-GMS-module)
+### Google Mobile Services (GMS) module
 
 Catapush GMS module is the integration of the SDK with Google Mobile Services / Firebase Cloud Messaging, it allows your app to send and receive messages while it’s in background on devices with Google Play Services installed.
 
-#### [Firebase Cloud Messaging prerequisites](#Firebase-Cloud-Messaging-prerequisites)
+#### Firebase Cloud Messaging prerequisites
 
 The Catapush GMS module needs a Firebase project to work.
 
@@ -517,7 +516,7 @@ Once you have completed all the steps above proceed with this configuration:
 4. Select your Android app then click on the "google-services.json" download button
 5. Copy the `google-services.json` file you have just downloaded in the `/app` subfolder of your Android Studio app project
 
-#### [Include the GMS module as a dependency](#include-the-gms-module-as-a-dependency)
+#### Include the GMS module as a dependency
 
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
@@ -525,7 +524,7 @@ In your `app/build.gradle`, in the dependencies block, add a new implementation:
 implementation('com.catapush.catapush-android-sdk:gms:10.2.11')
 ```
 
-#### [Google Mobile Services Gradle plugin configuration](#google-mobile-services-gradle-plugin-configuration)
+#### Google Mobile Services Gradle plugin configuration
 
 The Google Mobile Services plugin for Gradle parses the configuration information from the `google-services.json` file and sets up its client libraries for you.
 
@@ -556,7 +555,7 @@ Finally, add this metadata tag to this `<application>` block in your `AndroidMan
     android:value="@integer/google_play_services_version" />
 ```
 
-#### [Update your Catapush initialization to use the GMS module](#update-your-catapush-initialization-to-use-the-gms-module)
+#### Update your Catapush initialization to use the GMS module
 
 In your `Application.onCreate()` method add the `CatapushGMS.INSTANCE` to the SDK init:
 
@@ -569,10 +568,10 @@ Catapush.getInstance().init(
 );
 ```
 
-### [Huawei Mobile Services (HMS) module](#huawei-mobile-services-hms-module)
+### #huawei-mobile-services-hms-module
 Catapush HMS module is the integration of the SDK with Huawei Mobile Services / Push Kit, it allows your app to send and receive messages while it’s in background on Huawei devices.
 
-#### [Huawei Push Kit prerequisites](#Huawei-Push-Kit-prerequisites)
+#### #Huawei-Push-Kit-prerequisites
 The Catapush HMS module needs Huawei Push Kit to work.
 
 Please see the [HMS configuration guide](DOCUMENTATION_PLATFORM_HMS_PUSHKIT.md) to learn how to configure your Huawei AppGallery project and your Catapush Dashboard.
@@ -583,14 +582,14 @@ Once you have completed all the steps above proceed with this configuration:
 2. Navigate to "Project settings" from the menu on the left and select the "General information" tab and scroll down to download the `agconnect-services.json` file<br/>![](images/hms_pushkit_step5.png)
 3. Move the `agconnect-services.json` file in the `app/` subfolder in your Android Studio project
 
-#### [Include the HMS module as a dependency](#include-the-hms-module-as-a-dependency)
+#### Include the HMS module as a dependency
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
 implementation('com.catapush.catapush-android-sdk:hms:10.2.11')
 ```
 
-#### [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)
+#### Huawei Mobile Services Gradle plugin configuration
 The Huawei Mobile Services plugin for Gradle parses the configuration information from the `agconnect-services.json` file and sets up its client libraries for you.
 
 Add the plugin to your project by updating your project build.gradle file as follows:
@@ -615,7 +614,7 @@ And, at the top of your `app/build.gradle` file, add the following line:
 apply plugin: 'com.huawei.agconnect'
 ```
 
-#### [Update your Catapush initialization to use the HMS module](#update-your-catapush-initialization-to-use-the-hms-module)
+#### Update your Catapush initialization to use the HMS module
 In your `Application.onCreate()` method add the `CatapushGMS.INSTANCE` to the SDK init:
 
 ```java
@@ -642,13 +641,13 @@ Please note that the order of the modules in the list will be taken into account
 
 <br/><br/>
 
-## [Advanced](#advanced)
+## Advanced
 
-### [Notification management](#notification-management)
+### Notification management
 
 By default the received messages visualization is managed by the Catapush library, which builds status bar notifications and displays them in the Android notification tray following the notification template you provided on Catapush SDK initialization.
 
-### [Disable received messages visualization](#disable-push-notification-visualization)
+### Disable received messages visualization
 
 You can choose to disable the received messages visualization permanently using:
 
@@ -665,7 +664,7 @@ This state will be persisted and preserved across app restarts and Catapush star
 
 **Note**: disabling the received messages visualization **does not** make Catapush stop receiving messages, but you will have to notify the user on your own in the `onMessageReceived` callback of your `CatapushReceiver` implementation.
 
-### [Pause received messages visualization](#pause-push-notification-visualization)
+### Pause received messages visualization
 
 You can choose to disable received messages visualization temporarily using:
 ```java
@@ -682,7 +681,7 @@ This state will not be persisted. If you restart your app or stop/start Catapush
 
 **Note**: pausing the received messages visualization **does not** make Catapush stop receiving messages, but you will have to notify the user on your own in the `onMessageReceived` callback of your `CatapushReceiver` implementation.
 
-### [Hide Notifications when User is in your Messages List](#hide-notifications-when-user-is-in-your-messages-list)
+### Hide Notifications when User is in your Messages List
 
 It is also useful to pause/resume received messages visualization when your message list UI is running in the foreground.
 
@@ -706,7 +705,7 @@ public void onPause() {
 }
 ```
 
-### [Status Bar Notification](#notification-visualization)
+### Status Bar Notification
 
 When you decide to use the Catapush automatic received messages visualization, you can detect the tap on the status bar notification with your subclass of `CatapushReceiver` or  `CatapushTwoWayReceiver`.
 
@@ -722,7 +721,7 @@ public void onNotificationClicked(CatapushMessage catapushMessage, Context conte
 }
 ```
 
-### [Sending Read Notification Receipt Manually](#sending-read-notification-receipt-manually)
+### Sending Read Notification Receipt Manually
 
 If you decide to disable default Push Notification management, you have to manually report every message opening:
 
@@ -730,11 +729,11 @@ If you decide to disable default Push Notification management, you have to manua
 Catapush.getInstance().notifyMessageOpened(catapushMessage.id());
 ```
 
-### [Catapush conversation channels feature](#catapush-conversation-channels-feature)
+### Catapush conversation channels feature
 
 Since Catapush SDK for Android 10.0.0 you can deliver messages through different conversation channels. To send a message to a specific channel please see the [“channel” property of our send message API endpoint](https://www.catapush.com/docs-api?php#2.1-post---send-a-new-message) and [its description](https://www.catapush.com/docs-api?php#channels). You can list conversation channels, query messages from a specific channel or messages without channel. Please note that messages received with previous versions of the Catapush SDK and messages sent without channel are grouped in a default conversation channel identified by an empty string.
 
-#### [List conversation channels](#list-conversation-channels)
+#### List conversation channels
 
 Once Catapush is started, you can retrieve the received messages channels list using this method:
 
@@ -745,7 +744,7 @@ Catapush.getInstance().getChannelList(…)
 This list grows as your backend sends messages from different channels to your app.  
 This list includes an empty string that represent the default channel.
 
-#### [List messages without conversation channel](#list-messages-without-conversation-channel)
+#### List messages without conversation channel
 
 Once Catapush is started, you can retrieve the messages without channel using this method:
 
@@ -753,7 +752,7 @@ Once Catapush is started, you can retrieve the messages without channel using th
 Catapush.getInstance().getMessagesWithoutChannelAsList(…)
 ```
 
-#### [List messages in a conversation channel](#list-messages-in-a-coversation-channel)
+#### List messages in a conversation channel
 
 Once Catapush is started, you can retrieve the messages from a specific channel using this method:
 
@@ -761,7 +760,7 @@ Once Catapush is started, you can retrieve the messages from a specific channel 
 Catapush.getInstance().getMessagesFromChannelAsList(channel, …)
 ```
 
-### [Load and display messages attachment](#load-and-display-messages-attachment)
+### Load and display messages attachment
 
 If you received a message with an attachment, you’ll find its URL in the file().remoteUri() attribute.
 
@@ -818,7 +817,7 @@ try {
 }
 ```
 
-### [Enabling optimal QoS for Silent Push notifications by ignoring Doze](#ignoring-battery-optimizations)
+### Enabling optimal QoS for Silent Push notifications by ignoring Doze
 
 With version 6.0, Android has introduced a new feature called Doze that, under certain circumstances, might limit your app execution or network access while running in the background thus reducing reliability of sending Silent Push to execute the app; this capability is important to guarantee high priority push and the ability to start the application when it is closed / inactive.
 
@@ -851,22 +850,22 @@ The user will have to find and tap your app, then choose "Don't optimize".
 
 <br/><br/>
 
-## [Advanced UI](#advanced-ui)
+## Advanced UI
 
 You can customize the colors and the appereace of the notifications, we have create a [dedicated guide](https://www.catapush.com/docs-android-3) for it.
 
 <br/><br/>
 
-## [FAQ](#FAQ)
+## FAQ
 
-### [What's the size of the library?](#what-size-library)
+### What's the size of the library?
 
 Catapush is less than 600KB, we are building a new smaller version that will be released in 2020.
 
-### [What are battery and bandwidth usages?](#what-battery-usage)
+### What are battery and bandwidth usages?
 
 Catapush works hard to be a _good citizen_. In a test environment, with new messages received hourly, Catapush has proved to use less than 1% of battery and less than 100KB/day. In everyday scenarios, with low or zero message traffic, Catapush uses even less battery and the data traffic is near to 0KB/day.
 
-### [There is an example project available?](#there-is-example)
+### There is an example project available?
 
 You can download an example project on [Github](https://github.com/Catapush/catapush-android-sdk-example).
