@@ -646,11 +646,11 @@ Please note that the order of the modules in the list will be taken into account
 
 ### [Notification management](#notification-management)
 
-By default Push Notifications visualization is managed by the Catapush library, which builds Notifications and displays them in the notification bar with your UI settings.
+By default the received messages visualization is managed by the Catapush library, which builds status bar notifications and displays them in the Android notification tray following the notification template you provided on Catapush SDK initialization.
 
-### [Disable Push Notification Visualization](#disable-push-notification-visualization)
+### [Disable received messages visualization](#disable-push-notification-visualization)
 
-You can choose to disable Push Notifications visualization permanently using:
+You can choose to disable the received messages visualization permanently using:
 
 ```java
 Catapush.getInstance().disableNotifications();
@@ -663,11 +663,11 @@ Catapush.getInstance().enableNotifications();
 
 This state will be persisted and preserved across app restarts and Catapush starts/stops.
 
-**Note**: disabling Push Notifications **does not** stop receiving messages, but you have to handle Open Notification feedback by your own.
+**Note**: disabling the received messages visualization **does not** make Catapush stop receiving messages, but you will have to notify the user on your own in the `onMessageReceived` callback of your `CatapushReceiver` implementation.
 
-### [Pause Push Notification Visualization](#pause-push-notification-visualization)
+### [Pause received messages visualization](#pause-push-notification-visualization)
 
-You can choose to disable Push Notifications visualization temporarily using:
+You can choose to disable received messages visualization temporarily using:
 ```java
 Catapush.getInstance().pauseNotifications();
 ```
@@ -678,15 +678,15 @@ And re-enable them using:
 Catapush.getInstance().resumeNotifications();
 ```
 
-This state will not be persisted. If you restart your app or stop/start Catapush the push notifications visualization will be resumed.
+This state will not be persisted. If you restart your app or stop/start Catapush the received messages visualization will be resumed.
 
-**Note**: pausing Push Notifications **does not** stop receiving messages, but you have to handle Open Notification feedback by your own.
+**Note**: pausing the received messages visualization **does not** make Catapush stop receiving messages, but you will have to notify the user on your own in the `onMessageReceived` callback of your `CatapushReceiver` implementation.
 
 ### [Hide Notifications when User is in your Messages List](#hide-notifications-when-user-is-in-your-messages-list)
 
-It is also useful to pause/resume Push Notifications visualization when your Message list is active and visible.
+It is also useful to pause/resume received messages visualization when your message list UI is running in the foreground.
 
-You can disable and enable them as in the following example, taking advantage of your `Activity` lifecycle methods:
+You can disable and enable it as in the following example, taking advantage of your `Activity` lifecycle methods:
 ```java
 @Override
 public void onResume() {
@@ -696,7 +696,7 @@ public void onResume() {
 }
 ```
 
-Enable Push visualization when the user close your Message Thread list, e.g. ListActivity:
+Enable Push visualization when the user leaves your message list UI:
 ```java
 @Override
 public void onPause() {
@@ -706,9 +706,11 @@ public void onPause() {
 }
 ```
 
-### [Notification Visualization](#notification-visualization)
+### [Status Bar Notification](#notification-visualization)
 
-When you decide to use Android system Notification provided by Catapush, you can detect the click on the notification with your `MyReceiver` class. In the following example, when the user clicks the notification, an `onNotificationClicked` event is triggered and the appropriate `CatapushMessage` is passed as argument. The example shows how to start an `Activity` on this click event:
+When you decide to use the Catapush automatic received messages visualization, you can detect the tap on the status bar notification with your subclass of `CatapushReceiver` or  `CatapushTwoWayReceiver`.
+
+In the following example, when the user taps a message notification, the `onNotificationClicked` callback is triggered and the appropriate `CatapushMessage` instance is passed as argument. The example shows how to start an `Activity` on this tap event:
 ```java
 @Override
 public void onNotificationClicked(CatapushMessage catapushMessage, Context context) {
