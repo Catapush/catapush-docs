@@ -24,6 +24,7 @@
     *   [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)
     *   [Update your Catapush initialization to use the HMS module](#update-your-catapush-initialization-to-use-the-hms-module)
 *   [Advanced](#advanced)
+    *   [Handling client-side push services errors](#handling-client-side-push-services-errors)
     *   [Notification management](#notification-management)
     *   [Disable received messages visualization](#disable-received-messages-visualization)
     *   [Pause received messages visualization](#pause-received-messages-visualization)
@@ -642,6 +643,34 @@ Please note that the order of the modules in the list will be taken into account
 <br/><br/>
 
 ## Advanced
+
+### Handling client-side push services errors
+
+Sometimes the user's device will present problems with the GMS or HMS client libraries installed, this will prevent Catapush from receiving messages while you app is not running.
+
+Usually this type of problems are solved by updating the GMS or HMS client libraries but you'll have to ask your user to take action to perform the upgrade.
+
+This can be done by showing a notification in the system tray that asks for the user intervention to update Google Play Services from the Google Play Store or HMS Core from the Huawei AppGallery.
+
+To publish this request in the notification tray you can use these build-in features of the GMS/HMS client libraries in the `onPushServicesError` of your `CatapushReceiver` implementation:
+```java
+@Override
+public void onPushServicesError(@NonNull PushServicesException e, @NonNull Context context) {
+    if (PushPlatformType.GMS.name().equals(e.getPlatform()) && e.isUserResolvable()) {
+        // It's a GMS error and it's user resolvable: show a notification to the user
+        GoogleApiAvailability gmsAvailability = GoogleApiAvailability.getInstance();
+        gmsAvailability.setDefaultNotificationChannelId(
+                context, SampleApplication.NOTIFICATION_CHANNEL_ID);
+        gmsAvailability.showErrorNotification(context, e.getErrorCode());
+    } else if (PushPlatformType.HMS.name().equals(e.getPlatform()) && e.isUserResolvable()) {
+        // It's a HMS error and it's user resolvable: show a notification to the user
+        HuaweiApiAvailability hmsAvailability = HuaweiApiAvailability.getInstance();
+        hmsAvailability.showErrorNotification(context, e.getErrorCode());
+    }
+}
+```
+
+Note: if you are using just one of the two supported push services providers delete the other's code block to avoid compile issues.
 
 ### Notification management
 
