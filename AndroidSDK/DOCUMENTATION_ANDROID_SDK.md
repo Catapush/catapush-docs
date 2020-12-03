@@ -37,6 +37,7 @@
 *   [Advanced UI](#advanced-ui)
 *   [FAQ](#FAQ)
     *   [How does the library choose between GMS and HMS?](#how-does-the-library-choose-between-gms-and-hms)
+    *   [Which push services provider should I prioritize?](#which-push-services-provider-should-I-prioritize)
     *   [What's the size of the library?](#whats-the-size-of-the-library)
     *   [What are battery and bandwidth usages?](#what-are-battery-and-bandwidth-usages)
     *   [There is an example project available?](#there-is-an-example-project-available)
@@ -919,6 +920,14 @@ Catapush will automatically check for the push notifications services status on 
 If the first is not installed, not working, or not at the minumum required version Catapush will check for the availability of the second one and so on.
 
 If none of the enabled push services providers are available, the error returned by the first provider in the list will be sent to the `onPushServicesError` callback of your `CatapushReceiver` so that you'll be able to handle it.
+
+### Which push services provider should I prioritize?
+
+In most cases you'll prefer to prioritize GMS over HMS.
+
+This choice depends on your user base: if your users are located in USA and EU then GMS should be preferable, otherwise if your users are located in countries where Google services aren't available, like China, or your users almost exclusively own Huawei/Honor devices then we suggest to prioritize HMS.
+
+Additionally, if you set up a *build flavor* for each store in your app project, then use GMS only with Google Play Store releases and HMS only for Huawei AppGallery releases.
 
 ### What's the size of the library?
 
