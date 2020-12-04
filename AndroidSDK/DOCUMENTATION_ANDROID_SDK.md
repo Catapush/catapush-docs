@@ -571,10 +571,10 @@ Catapush.getInstance().init(
 );
 ```
 
-### #huawei-mobile-services-hms-module
+### Huawei Mobile Services (HMS) module
 Catapush HMS module is the integration of the SDK with Huawei Mobile Services / Push Kit, it allows your app to send and receive messages while it’s in background on Huawei devices.
 
-#### #Huawei-Push-Kit-prerequisites
+#### Huawei Push Kit prerequisites
 The Catapush HMS module needs Huawei Push Kit to work.
 
 Please see the [HMS configuration guide](DOCUMENTATION_PLATFORM_HMS_PUSHKIT.md) to learn how to configure your Huawei AppGallery project and your Catapush Dashboard.
