@@ -4,7 +4,7 @@
 
 ## Index
 
-*   [Catapush 10.2.x](#catapush-10.2.x)
+*   [Catapush 10.2.x](#catapush-102x)
 *   [Project prerequisites](#project-prerequisites)
 *   [Core module](#core-module)
     *   [Include the Core module as a dependency](#include-the-core-module-as-a-dependency)
