@@ -931,7 +931,7 @@ Additionally, if you set up a *build flavor* for each store in your app project,
 
 ### What's the size of the library?
 
-Catapush is less than 600KB, we are building a new smaller version that will be released in 2020.
+Catapush weights less than 600KB!
 
 ### What are battery and bandwidth usages?
 
