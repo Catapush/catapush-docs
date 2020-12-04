@@ -36,6 +36,26 @@ To include the Catapush UI Components just add the `ui` module to your app by de
 implementation('com.catapush.catapush-android-sdk:ui:10.2.+')
 ```
 
+#### 10.2.12 (04/12/2020)
+
+- We've fixed an issue reported by a customer about slow app launches following a Catapush notification tap.<br/>
+This is caused by a policy of the Android system might defer the broadcast of a notification `PendingIntent` under particular circumstances.<br/>
+The most noticeable case is when the device startup sequence has not been completed yet.<br/>
+The Catapush SDK uses a `PendingIntent` that targets a `BroadcastReceiver` (actually a `CatapushReceiver` subclass) instead of an `Activity` and recent versions of Android consider them as low-priority interactions thus delaying them.<br/>
+We have added a new method to Catapush named `setNotificationIntent` that gives you the ability to provide a custom `PendingIntent` instance to be used in the status bar notification of each received message.<br/>
+You will probably want to move the code that is now contained in the `onNotificationClicked` callback of your `CatapushReceiver` implementation to this new callback.<br/>
+When you provide a custom `PendingIntent` the `onNotificationClicked` callback of your`CatapushReceiver` won't be invoked; `onNotificationClicked` callback is scheduled to be deprecated in a future release.<br/>
+Example code:<br/>
+```java
+Catapush.getInstance().setNotificationIntent((message, context) -> {
+    Intent intent = new Intent(context, MainActivity.class);
+    intent.putExtra("MESSAGE", message);
+    // Setting a unique data URI ensures that Android won't recycle the extras Bundle between different PendingIntent instances
+    intent.setData(Uri.parse("catapush://" + BuildConfig.PARCELABLE_PACKAGE + "/message/" + message.id()));
+    return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+});
+```
+
 #### 10.2.11 (25/11/2020)
 
 - Improved HMS / Push Kit initialization and error handling.
