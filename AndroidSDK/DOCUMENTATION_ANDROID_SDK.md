@@ -883,7 +883,7 @@ The user will have to find and tap your app, then choose "Don't optimize".
 
 ## Advanced UI
 
-You can customize the colors and the appereace of the notifications, we have create a [dedicated guide](https://www.catapush.com/docs-android-3) for it.
+You can customize the colors and the appereace of the notifications, we have create a [dedicated guide](DOCUMENTATION_ANDROID_SDK_UI.md) for it.
 
 <br/><br/>
 
