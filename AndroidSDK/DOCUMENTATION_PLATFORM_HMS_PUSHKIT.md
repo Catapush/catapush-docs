@@ -23,16 +23,26 @@ Finally, confirm with the "OK" button.
 
 ![AppGallery Connect, my project, manage APIs](images/hms_pushkit_step4.png)
 
-**5** - Select the "General information" tab and scroll down to take note of the `App ID` and `App secret` values, then click on "agconnect-services.json" button and add this file in your Android Studio project `/app` subfolder.
+**5** - Select the "General information" tab and scroll down to the `SHA-256 certificate fingerprint`: you have to enter the fingerprint of the certificate used to sign the APKs distributed to your users.
+
+You can obtain the SHA-256 fingerprint using the JDK `keytool`:
+```bash
+keytool -list -v -keystore your_distribution_keystore.jks
+```
+You'll be prompterd for the keystore password, then it'll print out the keys fingerprints.
+
+IMPORTANT: the HMS client libraries won't work unless this parameter is correctly set.
 
 ![AppGallery Connect, my project, general information](images/hms_pushkit_step5.png)
 
-**6** - Visit [www.catapush.com/panel/dashboard](https://www.catapush.com/panel/dashboard) and login with your Catapush credentials.<br/>
+**6** - Now take note of the `App ID` and `App secret` values, we'll need it later, then click on "agconnect-services.json" button and add this file in your Android Studio project `/app` subfolder.
+
+**7** - Visit [www.catapush.com/panel/dashboard](https://www.catapush.com/panel/dashboard) and login with your Catapush credentials.<br/>
 Select your app from the side menu and select "Platforms".<br/>
 
 ![Catapush dashboard, configuring platform](images/hms_pushkit_step6.png)
 
-**7** - Paste the `App ID` and `App secret` values in the corresponding fields of the "Huawei" platform.
+**8** - Paste the `App ID` and `App secret` values in the corresponding fields of the "Huawei" platform.
 
 ![Catapush dashboard, Huawei platform](images/hms_pushkit_step7.png)
 
