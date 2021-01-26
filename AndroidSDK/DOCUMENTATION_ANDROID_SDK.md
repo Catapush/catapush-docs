@@ -81,7 +81,7 @@ repositories {
 Then, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:core:10.2.14')
+implementation('com.catapush.catapush-android-sdk:core:10.2.15')
 ```
 
 #### Update your app AndroidManifest.xml
@@ -524,7 +524,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:gms:10.2.14')
+implementation('com.catapush.catapush-android-sdk:gms:10.2.15')
 ```
 
 #### Google Mobile Services Gradle plugin configuration
@@ -589,7 +589,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms:10.2.14')
+implementation('com.catapush.catapush-android-sdk:hms:10.2.15')
 ```
 
 #### Huawei Mobile Services Gradle plugin configuration

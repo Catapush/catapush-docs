@@ -36,6 +36,11 @@ To include the Catapush UI Components just add the `ui` module to your app by de
 implementation('com.catapush.catapush-android-sdk:ui:10.2.+')
 ```
 
+#### 10.2.15 (26/01/2021)
+
+- Minor bug fixes and improvements
+- No modifications to your integration are required
+
 #### 10.2.14 (17/12/2020)
 
 - Minor improvements on secure credentials storage initialization and error handling
