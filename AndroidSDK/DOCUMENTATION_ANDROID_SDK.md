@@ -930,6 +930,8 @@ You can use them singularly in different app _build flavors_, or more than one a
 
 If you are using more than one push services provider at a time Catapush will evaluate their availability on the device following the order you used in the initialization of the SDK.
 
+We suggest you to keep GMS as the highest priority push provider unless your app has been whitelisted for high-priority data messages on HMS, see [Push Kit Special Permissions](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/faq-0000001050042183#EN-US_TOPIC_0000001124288055__section037425218509).
+
 To give higher priority to GMS:
 ```java
 Catapush.getInstance().init(
@@ -939,7 +941,7 @@ Catapush.getInstance().init(
         ...
 ```
 
-To give higher priority to HMS:
+To give higher priority to HMS (suggested only if your app has been explicitly approved by Huawei for high-priority data messages):
 ```java
 Catapush.getInstance().init(
         context,
