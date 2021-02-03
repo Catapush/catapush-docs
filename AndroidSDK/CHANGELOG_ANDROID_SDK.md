@@ -36,6 +36,11 @@ To include the Catapush UI Components just add the `ui` module to your app by de
 implementation('com.catapush.catapush-android-sdk:ui:10.2.+')
 ```
 
+#### 10.2.16 (03/02/2021)
+
+- Android Jetpack (AndroidX) dependencies has been upgraded to their latest stable versions
+- A new module `hms-base` has been added for the customers who declares their own `HmsMessageService` implementation: if you're declaring your own `HmsMessageService` just replace the dependency `implementation('com.catapush.catapush-android-sdk:hms:10.2.+')` with `implementation('com.catapush.catapush-android-sdk:hms-base:10.2.+')`; otherwise no modifications to your integration are required
+
 #### 10.2.15 (26/01/2021)
 
 - Minor bug fixes and improvements

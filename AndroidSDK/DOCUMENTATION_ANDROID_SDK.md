@@ -21,6 +21,7 @@
 *   [Huawei Mobile Services (HMS) module](#huawei-mobile-services-hms-module)
     *   [Huawei Push Kit prerequisites](#Huawei-Push-Kit-prerequisites)
     *   [Include the HMS module as a dependency](#include-the-hms-module-as-a-dependency)
+    *   [OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService](#OPTIONAL-integrate-Catapush-HMS-with-a-pre-existent-HmsMessageService)
     *   [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)
     *   [Update your Catapush initialization to use the HMS module](#update-your-catapush-initialization-to-use-the-hms-module)
 *   [Advanced](#advanced)
@@ -81,7 +82,7 @@ repositories {
 Then, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:core:10.2.15')
+implementation('com.catapush.catapush-android-sdk:core:10.2.16')
 ```
 
 #### Update your app AndroidManifest.xml
@@ -524,7 +525,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:gms:10.2.15')
+implementation('com.catapush.catapush-android-sdk:gms:10.2.16')
 ```
 
 #### Google Mobile Services Gradle plugin configuration
@@ -589,7 +590,39 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms:10.2.15')
+implementation('com.catapush.catapush-android-sdk:hms:10.2.16')
+```
+
+#### OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService
+
+If you're already using Huawei Push Kit to deliver push notifications to your app and thus you have already defined a custom `HmsMessageService` you have to customize your implementation to relay to our SDK client library the push notifications intended for Catapush.
+
+In your `app/build.gradle`, in the dependencies block, replace the `hms` module with the `hms-base` module:
+
+```groovy
+implementation('com.catapush.catapush-android-sdk:hms-base:10.2.16')
+```
+
+Then edit your `HmsMessageService` to relay the push notifications and the refreshed push tokens:
+```java
+public class YourHmsMessageService extends HmsMessageService {
+
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        if (remoteMessage.getDataOfMap().containsKey(Catapush.KEY_CATAPUSH_WAKEUP)) {
+            CatapushHms.INSTANCE.handleHmsWakeup(remoteMessage);
+        } else {
+            // Your pre-existent push notification handling
+        }
+    }
+
+    @Override
+    public void onNewToken(String refreshedToken) {
+        CatapushHms.INSTANCE.handleHmsNewToken(refreshedToken);
+        // Send the refreshed push token to your server
+    }
+
+}
 ```
 
 #### Huawei Mobile Services Gradle plugin configuration
