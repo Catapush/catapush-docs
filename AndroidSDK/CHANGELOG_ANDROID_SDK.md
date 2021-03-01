@@ -36,6 +36,11 @@ To include the Catapush UI Components just add the `ui` module to your app by de
 implementation('com.catapush.catapush-android-sdk:ui:10.2.+')
 ```
 
+#### 10.2.17 (01/03/2021)
+
+- Improved error handling of secure storage submodule
+- Catapush UI components: SendFieldView has a new attachment icon and a `setAttachButtonClickListener` method to listen to its click events
+
 #### 10.2.16 (03/02/2021)
 
 - Android Jetpack (AndroidX) dependencies has been upgraded to their latest stable versions
