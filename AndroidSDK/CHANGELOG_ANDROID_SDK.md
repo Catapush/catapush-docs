@@ -36,10 +36,15 @@ To include the Catapush UI Components just add the `ui` module to your app by de
 implementation('com.catapush.catapush-android-sdk:ui:10.2.+')
 ```
 
+#### 10.2.18 (04/03/2021)
+
+- Handle max attachment size: if the uploaded file exceeds the 8MB limit the SDK will return the new `CatapushFileUploadError` exception with the `UPLOAD_FILE_MAX_SIZE_EXCEEDED` (`54001`) error code
+- Catapush UI components: the image messages' layout has been improved
+
 #### 10.2.17 (01/03/2021)
 
 - Improved error handling of secure storage submodule
-- Catapush UI components: SendFieldView has a new attachment icon and a `setAttachButtonClickListener` method to listen to its click events
+- Catapush UI components: `SendFieldView` has a new attachment icon and a `setAttachButtonClickListener` method to listen to its click events
 
 #### 10.2.16 (03/02/2021)
 
