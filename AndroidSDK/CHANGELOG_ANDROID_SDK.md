@@ -36,6 +36,12 @@ To include the Catapush UI Components just add the `ui` module to your app by de
 implementation('com.catapush.catapush-android-sdk:ui:10.2.+')
 ```
 
+#### 10.2.19 (12/03/2021)
+
+- The `Catapush.start(…)` method will reuse previously set user credentials if any available when `Catapush.setUser(…)` hasn't been already invoked
+- Improved error handling of secure storage submodule
+- Update Dagger dependency to version 2.33
+
 #### 10.2.18 (04/03/2021)
 
 - Handle max attachment size: if the uploaded file exceeds the 8MB limit the SDK will return the new `CatapushFileUploadError` exception with the `UPLOAD_FILE_MAX_SIZE_EXCEEDED` (`54001`) error code
