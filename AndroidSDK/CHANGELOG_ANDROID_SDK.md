@@ -36,6 +36,10 @@ To include the Catapush UI Components just add the `ui` module to your app by de
 implementation('com.catapush.catapush-android-sdk:ui:10.2.+')
 ```
 
+#### 10.2.20 (16/03/2021)
+
+- Added `Catapush.getIdentifier(…)` and `Catapush.getPassword(…)` methods to get the Catapush user credentials previously set with the `Catapush.setUser(…)` method
+
 #### 10.2.19 (12/03/2021)
 
 - The `Catapush.start(…)` method will reuse previously set user credentials if any available when `Catapush.setUser(…)` hasn't been already invoked
