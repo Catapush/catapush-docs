@@ -474,24 +474,32 @@ See RxJava official docs [What's different in 2.0 - error handling](https://gith
 #### Start
 
 Catapush setup is complete.  
-Whenever you want to start using Catapush, you just need to call the `start` method. For instance, in your main `Activity`, after your user has logged in, you can use the following code to start Catapush:
+Now you have to start the Catapush messaging service either:
+
+- As soon as your app starts if the user is already logged and you've already obtained its Catapush user credentials from your backend
+- As soon as your user logs in your app and your app obtains the Catapush user credentials from your backend
+
+In either case it's important to start the Catapush messaging service as soon as possible to improve the message delivery performances while your app is in use.
+
+To start Catapush, you just need to call its `start` method.  
+For instance, in your main `Activity.onResume` callback, you can use the following code to start Catapush:
 
 ```java
 Catapush.getInstance()
-.setUser(CATAPUSH_USER, CATAPUSH_PASSWORD)
-.start(new RecoverableErrorCallback() {
-    @Override
-    public void success(Boolean aBoolean) {
-        Log.d("MyApp", "Catapush has been successfully started");
-    }
-    @Override
-    public void warning(@NonNull Throwable throwable) {
-        Log.d("MyApp", "Catapush warning: " + throwable.getMessage());
-    }
-    @Override
-    public void failure(@NonNull Throwable throwable) {
-        Log.d("MyApp", "Catapush can't be started: " + throwable.getMessage());
-    }
+    .setUser(CATAPUSH_USER, CATAPUSH_PASSWORD)
+    .start(new RecoverableErrorCallback() {
+        @Override
+        public void success(Boolean response) {
+            Log.d("MyApp", "Catapush has been successfully started");
+        }
+        @Override
+        public void warning(@NonNull Throwable recoverableError) {
+            Log.d("MyApp", "Catapush warning: " + recoverableError.getMessage());
+        }
+        @Override
+        public void failure(@NonNull Throwable irrecoverableError) {
+            Log.d("MyApp", "Catapush can't be started: " + irrecoverableError.getMessage());
+        }
 });
 ```
 
