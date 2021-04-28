@@ -36,6 +36,10 @@ To include the Catapush UI Components just add the `ui` module to your app by de
 implementation('com.catapush.catapush-android-sdk:ui:10.2.+')
 ```
 
+#### 10.2.21 (28/04/2021)
+
+- If you are using multiple mobile services (i.e. GMS and HMS) with Catapush you can now listen for the changes in the push platform election outcome providing a callback through `Catapush.setPushPlatformElectionCallback(…)`. The `success` method will be invoked after the first election and every time the election result changes, the `failure` method will be invoked if no push platform could be elected. The election is performed at every app restart.
+
 #### 10.2.20 (16/03/2021)
 
 - Added `Catapush.getIdentifier(…)` and `Catapush.getPassword(…)` methods to get the Catapush user credentials previously set with the `Catapush.setUser(…)` method
