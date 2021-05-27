@@ -2,6 +2,16 @@
 
 # Catapush Android SDK Changelog
 
+## Catapush 11.0.x
+
+Catapush 11.0.x targets Android 11.0 (API 30) and requires Android 5.0 (API 21).
+
+#### 11.0.0 (18/05/2021)
+
+- Updated Android target SDK level to 30 and minimum SDK level to 21
+- The `CatapushReceiver.onNotificationClicked(…)` and `CatapushTwoWayReceiver.onNotificationClicked(…)` callbacks have been removed and replaced with the new `Catapush.setNotificationIntent(IIntentProvider)` to avoid delays on your app launch after a user tap on the Catapush notifications. See the [Catapush API docs](DOCUMENTATION_ANDROID_SDK.md#migration-from-catapush-102x) for details
+- Updated 3rd party library dependencies and removed deprecated/unmaintained libraries
+
 ## Catapush 10.2.x
 
 Catapush 10.2.x targets Android 10.0 (API 29) and requires Android 4.1 (API 18).
