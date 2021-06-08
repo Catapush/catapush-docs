@@ -6,6 +6,11 @@
 
 Catapush 11.0.x targets Android 11.0 (API 30) and requires Android 5.0 (API 21).
 
+#### 11.0.1 (08/06/2020)
+
+- Improve disconnection and reconnection performance after a network loss
+- Catapush UI components: minor improvements and bug fixes
+
 #### 11.0.0 (18/05/2021)
 
 - Updated Android target SDK level to 30 and minimum SDK level to 21
