@@ -6,6 +6,10 @@
 
 Catapush 11.0.x targets Android 11.0 (API 30) and requires Android 5.0 (API 21).
 
+#### 11.0.2 (24/06/2021)
+
+- Update com.huawei.hms:push dependency to version 5.3.0.301
+
 #### 11.0.1 (08/06/2020)
 
 - Improve disconnection and reconnection performance after a network loss
