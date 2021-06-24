@@ -51,6 +51,10 @@ To include the Catapush UI Components just add the `ui` module to your app by de
 implementation('com.catapush.catapush-android-sdk:ui:10.2.+')
 ```
 
+#### 10.2.23 (24/06/2021)
+
+- Update com.huawei.hms:push dependency to version 5.3.0.301
+
 #### 10.2.22 (11/05/2021)
 
 - Mobile services (GMS, HMS) will be considered as available even when they're being updated to avoid excessive switching between providers when more than one mobile service adapter is passed to the `Catapush.init(…)` method
