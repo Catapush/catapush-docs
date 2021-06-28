@@ -41,6 +41,7 @@
 *   [FAQ](#faq)
     *   [How does the library choose between GMS and HMS?](#how-does-the-library-choose-between-gms-and-hms)
     *   [Which push services provider should I prioritize?](#which-push-services-provider-should-i-prioritize)
+    *   [Do I need to configure ProGuard for Catapush?](#do-i-need-to-configure-proguard-for-catapush)
     *   [What's the size of the library?](#whats-the-size-of-the-library)
     *   [What are battery and bandwidth usages?](#what-are-battery-and-bandwidth-usages)
     *   [There is an example project available?](#there-is-an-example-project-available)
@@ -1083,6 +1084,12 @@ In most cases you'll prefer to prioritize GMS over HMS.
 This choice depends on your user base: if your users are located in USA and EU then GMS should be preferable, otherwise if your users are located in countries where Google services aren't available, like China, or your users almost exclusively own Huawei/Honor devices then we suggest to prioritize HMS.
 
 Additionally, if you set up a *build flavor* for each store in your app project, then use GMS only with Google Play Store releases and HMS only for Huawei AppGallery releases.
+
+### Do I need to configure ProGuard for Catapush?
+
+No, you don't need to add Catapush-specific rules to your ProGuard configuration.
+
+All the Catapush library modules provide a `consumer-rules.pro` rules configuration file that gets merged to your app's ProGuard configuration at build time!
 
 ### What's the size of the library?
 
