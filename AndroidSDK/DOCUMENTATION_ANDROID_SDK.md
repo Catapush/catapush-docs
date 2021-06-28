@@ -41,6 +41,7 @@
 *   [FAQ](#faq)
     *   [How does the library choose between GMS and HMS?](#how-does-the-library-choose-between-gms-and-hms)
     *   [Which push services provider should I prioritize?](#which-push-services-provider-should-i-prioritize)
+    *   [Can I use Catapush without push notifications providers (foreground-only delivery)?](#can-i-use-catapush-without-push-notifications-providers-foreground-only-delivery)
     *   [Do I need to configure ProGuard for Catapush?](#do-i-need-to-configure-proguard-for-catapush)
     *   [What's the size of the library?](#whats-the-size-of-the-library)
     *   [What are battery and bandwidth usages?](#what-are-battery-and-bandwidth-usages)
@@ -1084,6 +1085,24 @@ In most cases you'll prefer to prioritize GMS over HMS.
 This choice depends on your user base: if your users are located in USA and EU then GMS should be preferable, otherwise if your users are located in countries where Google services aren't available, like China, or your users almost exclusively own Huawei/Honor devices then we suggest to prioritize HMS.
 
 Additionally, if you set up a *build flavor* for each store in your app project, then use GMS only with Google Play Store releases and HMS only for Huawei AppGallery releases.
+
+### Can I use Catapush without push notifications providers (foreground-only delivery)?
+
+If you need to to receive Catapush messages only when your app is in the foreground (opened and running on your user phone) without depending on the GMS or HMS clients of the device you can initialize Catapush with an empty list of mobile push services adapters:
+
+```java
+Catapush.getInstance().init(
+        context,
+        CHANNEL_ID,
+        Collections.emptyList(),
+        ...
+```
+
+And in your app's `build.gradle` file you will only need to declare a dependency to the Catapush core module:
+
+```groovy
+implementation('com.catapush.catapush-android-sdk:core:$catapush_version')
+```
 
 ### Do I need to configure ProGuard for Catapush?
 
