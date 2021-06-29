@@ -55,6 +55,10 @@ To include the Catapush UI Components just add the `ui` module to your app by de
 implementation('com.catapush.catapush-android-sdk:ui:10.2.+')
 ```
 
+#### 10.2.24 (29/06/2021)
+
+- Update com.huawei.hms:push dependency to version 5.3.0.304 to address an implicit PendingIntent vulnerability
+
 #### 10.2.23 (24/06/2021)
 
 - Update com.huawei.hms:push dependency to version 5.3.0.301
