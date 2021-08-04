@@ -230,7 +230,11 @@ The `onDisconnect(int errorCode, Context context)` callback might be executed wi
 
 <td>6 = SERVICE_STOPPED</td>
 
-<td>- The Android system stopped the messaging service due to power saving policies - The local messaging service stopped following a network error</td>
+<td>
+ 
+ - The Android system stopped the messaging service due to power saving policies
+ - The local messaging service stopped following a network error
+ </td>
 
 <td>This is the expected behavior on Android 8.0 and later. You should expect this code to be delivered around a minute after your app went to background.</td>
 
@@ -243,6 +247,30 @@ The `onDisconnect(int errorCode, Context context)` callback might be executed wi
 <td>The local messaging service stopped after explicitly invoking Catapush.stop()</td>
 
 <td></td>
+
+</tr>
+
+</tr>
+
+<tr>
+
+<td>8 = CONNECTION_PARAMETERS_LOAD_FAILED</td>
+
+<td>The stored credentials are invalid.</td>
+
+<td>Please check the Catapush credentials, see Catapush.setUser()</td>
+
+</tr>
+
+</tr>
+
+<tr>
+
+<td>9 = CONNECTION_TIMEOUT</td>
+
+<td>The connection attempt timed out, might be caused by connectivity issues.</td>
+
+<td>Please check your internet connection and try to reconnect again in a few minutes.</td>
 
 </tr>
 
