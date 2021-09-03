@@ -6,6 +6,10 @@
 
 Catapush 11.0.x targets Android 11.0 (API 30) and requires Android 5.0 (API 21).
 
+#### 11.0.5 (03/09/2021)
+
+- Improvements to the `Catapush.notifyMessageOpened(…)` implementation
+
 #### 11.0.4 (04/08/2021)
 
 - Added `Catapush.countMessages(…)` to get the message count of the current user
