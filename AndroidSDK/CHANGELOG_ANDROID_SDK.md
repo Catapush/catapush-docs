@@ -2,6 +2,20 @@
 
 # Catapush Android SDK Changelog
 
+## Catapush 11.1.x
+
+Catapush 11.1.x targets Android 11.0 (API 30) and requires Android 5.0 (API 21).
+
+This release contains updated dependencies and a new methods in the Catapush interface.
+
+#### 11.1.0 (15/09/2021)
+
+- Migrated the methods `Catapush.getMessagesAsDataSourceFactory()`, `Catapush.getMessagesWithoutChannelAsDataSourceFactory()` and `Catapush.getMessagesFromChannelAsDataSourceFactory(…)` to AndroidX Paging 3.x and renamed them to `Catapush.getMessagesAsPagingDataFlowable(…)`, `Catapush.getMessagesWithoutChannelAsPagingDataFlowable(…)` and `Catapush.getMessagesFromChannelAsPagingDataFlowable(…)` respectively
+- Added `Catapush.logout(…)` to delete the current user and messages from the local SDK database and invalidate the authentication session server-side
+- Updated AndroidX Paging to version 3.0.1
+- Updated Dagger to version 2.39.1
+- Update Kotlin to version 1.5.30
+
 ## Catapush 11.0.x
 
 Catapush 11.0.x targets Android 11.0 (API 30) and requires Android 5.0 (API 21).
