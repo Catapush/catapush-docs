@@ -8,6 +8,10 @@ Catapush 11.1.x targets Android 11.0 (API 30) and requires Android 5.0 (API 21).
 
 This release contains updated dependencies and a new methods in the Catapush interface.
 
+#### 11.1.1 (22/09/2021)
+
+- Catapush UI components: minor improvements and bug fixes
+
 #### 11.1.0 (15/09/2021)
 
 - Migrated the methods `Catapush.getMessagesAsDataSourceFactory()`, `Catapush.getMessagesWithoutChannelAsDataSourceFactory()` and `Catapush.getMessagesFromChannelAsDataSourceFactory(…)` to AndroidX Paging 3.x and renamed them to `Catapush.getMessagesAsPagingDataFlowable(…)`, `Catapush.getMessagesWithoutChannelAsPagingDataFlowable(…)` and `Catapush.getMessagesFromChannelAsPagingDataFlowable(…)` respectively
