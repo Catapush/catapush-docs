@@ -4,7 +4,7 @@
 
 ## Index
 
-*   [Catapush 11.0.x](#catapush-110x)
+*   [Catapush 11.1.x](#catapush-111x)
 *   [Project prerequisites](#project-prerequisites)
 *   [Core module](#core-module)
     *   [Include the Core module as a dependency](#include-the-core-module-as-a-dependency)
@@ -47,9 +47,9 @@
     *   [What are battery and bandwidth usages?](#what-are-battery-and-bandwidth-usages)
     *   [There is an example project available?](#there-is-an-example-project-available)
 
-## Catapush 11.0.x
+## Catapush 11.1.x
 
-Catapush 11.0.x targets Android 11.0 (API 30) and requires Android 4.1 (API 21).
+Catapush 11.1.x targets Android 11.0 (API 30) and requires Android 4.1 (API 21).
 
 ## Project prerequisites
 
@@ -139,23 +139,13 @@ import com.catapush.library.messages.CatapushMessage;
 public class MyReceiver extends CatapushTwoWayReceiver {
 
     @Override
+    public void onConnecting(@NonNull Context context) {
+        Log.d("MyApp", "Connecting...");
+    }
+
+    @Override
     public void onConnected(@NonNull Context context) {
         Log.d("MyApp", "Connected");
-    }
-
-    @Override
-    public void onMessageReceived(@NonNull CatapushMessage msg, @NonNull Context context) {
-        Log.d("MyApp", "Received Message: " + msg.toString());
-    }
-
-    @Override
-    public void onMessageOpened(@NonNull CatapushMessage msg, @NonNull Context context) {
-        Log.d("MyApp", "Opened Message: " + msg.toString());
-    }
-
-    @Override
-    public void onRegistrationFailed(@NonNull CatapushAuthenticationError error, @NonNull Context context) {
-        Log.e("MyApp", "Error Message: " + error.getMessage());
     }
 
     @Override
@@ -164,8 +154,23 @@ public class MyReceiver extends CatapushTwoWayReceiver {
     }
 
     @Override
-    public void onConnecting(@NonNull Context context) {
-        Log.d("MyApp", "Connecting...");
+    public void onMessageReceived(@NonNull CatapushMessage msg, @NonNull Context context) {
+        Log.d("MyApp", "Received message: " + msg.toString());
+    }
+
+    @Override
+    public void onMessageOpened(@NonNull CatapushMessage msg, @NonNull Context context) {
+        Log.d("MyApp", "Opened message: " + msg.toString());
+    }
+
+    @Override
+    public void onMessageOpenedConfirmed(@NonNull CatapushMessage message, @NonNull Context context) {
+        Log.d("MyApp", "Opened message confirmed: " + msg.toString());
+    }
+
+    @Override
+    public void onRegistrationFailed(@NonNull CatapushAuthenticationError error, @NonNull Context context) {
+        Log.e("MyApp", "Error message: " + error.getMessage());
     }
 
     @Override
@@ -753,7 +758,7 @@ Please note that the order of the modules in the list will be taken into account
 
 ## Migration from Catapush 10.2.x
 
-To migrate your previous Catapush 10.2.x integration to Catapush 11.0.x you just need to follow this steps:
+To migrate your previous Catapush 10.2.x integration to Catapush 11.1.x you just need to follow this steps:
 
 In your app's `AndroidManifest.xml` file update your `CatapushReceiver` implementation declaration to match the following intent filter actions:
 ```xml
