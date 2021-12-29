@@ -8,6 +8,11 @@ Catapush 11.1.x targets Android 11.0 (API 30) and requires Android 5.0 (API 21).
 
 This release contains updated dependencies and a new methods in the Catapush interface.
 
+#### 11.1.4 (29/12/2021)
+
+- Improve message opened notifications delivery to Catapush servers to avoid duplicated notifications
+- Added a workaround to a known Android 11 network-related issue, see the [issue on Google issue tracker](https://issuetracker.google.com/issues/175055271) for more details
+
 #### 11.1.3 (19/10/2021)
 
 - Fix Proguard configuration to avoid runtime crashes caused by missing `org.xmlpull.v1.*` classes
