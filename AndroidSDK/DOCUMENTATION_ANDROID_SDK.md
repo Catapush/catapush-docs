@@ -11,6 +11,7 @@
     *   [Update your app AndroidManifest.xml](#update-your-app-androidmanifestxml)
     *   [Error handling](#error-handling)
     *   [Initialization](#initialization)
+    *   [Android notification channels support](#android-notification-channels-support)
     *   [RxJava catch-all error handler](#rxjava-catch-all-error-handler)
     *   [Start](#start)
     *   [Handle notification taps](#handle-notification-taps)
@@ -25,6 +26,7 @@
     *   [OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService](#optional-integrate-catapush-hms-with-a-pre-existent-hmsmessageservice)
     *   [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)
     *   [Update your Catapush initialization to use the HMS module](#update-your-catapush-initialization-to-use-the-hms-module)
+*   [Migration from Catapush 11.1.x](#migration-from-catapush-111x)
 *   [Migration from Catapush 10.2.x](#migration-from-catapush-102x)
 *   [Advanced](#advanced)
     *   [Handling client-side push services errors](#handling-client-side-push-services-errors)
@@ -47,9 +49,9 @@
     *   [What are battery and bandwidth usages?](#what-are-battery-and-bandwidth-usages)
     *   [There is an example project available?](#there-is-an-example-project-available)
 
-## Catapush 11.1.x
+## Catapush 11.2.x
 
-Catapush 11.1.x targets Android 11.0 (API 30) and requires Android 4.1 (API 21).
+Catapush 11.2.x targets Android 11.0 (API 30) and requires Android 4.1 (API 21).
 
 ## Project prerequisites
 
@@ -78,7 +80,7 @@ repositories {
 Then, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:core:11.1.4')
+implementation('com.catapush.catapush-android-sdk:core:11.2.0')
 ```
 
 #### Update your app AndroidManifest.xml
@@ -361,7 +363,7 @@ The `onRegistrationFailed(CatapushAuthenticationError error, Context context)` c
 
 You must initialize Catapush in your class that extends `Application`.
 
-You also have to provide your customized notification style template here.
+You also have to provide one or more customized notification style templates here, on for each notification channel that your app created in the Android `NotificationManager`.
 
 Your `Application.onCreate()` method should contain the following lines:
 
@@ -382,25 +384,38 @@ public class MyApplication extends MultiDexApplication {
         // See https://developer.android.com/training/notify-user/channels
         NotificationManager nm = ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));
         if (nm != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String channelName = getString(R.string.catapush_notification_channel_name);
-            NotificationChannel channel = nm.getNotificationChannel(NOTIFICATION_CHANNEL_ID);
-            if (channel == null) {
-                channel = new NotificationChannel(
-                        NOTIFICATION_CHANNEL_ID,
-                        channelName,
-                        NotificationManager.IMPORTANCE_HIGH);
-                // Customize your notification appearance here (Android >= 8.0)
-                // it's possible to customize a channel only on creation
-                channel.enableVibration(true);
-                channel.setVibrationPattern(new long[]{100, 200, 100, 300});
-                channel.enableLights(true);
-                channel.setLightColor(ContextCompat.getColor(this, R.color.primary));
-            } else if (!channelName.contentEquals(channel.getName())) {
-                // Update channel name, useful when the user changes the system language
-                channel.setName(channelName);
-            }
+            channel = new NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID,
+                    getString(R.string.your_notification_channel_name),
+                    NotificationManager.IMPORTANCE_HIGH);
+            // Customize your notification appearance here (Android >= 8.0)
+            // it's possible to customize a channel only on creation
+            channel.enableVibration(true);
+            channel.setVibrationPattern(new long[]{100, 200, 100, 300});
+            channel.enableLights(true);
+            channel.setLightColor(ContextCompat.getColor(this, R.color.primary));
             nm.createNotificationChannel(channel);
         }
+
+        // This is the notification template that the Catapush SDK uses to build
+        // the status bar notification shown to the user.
+        // Some settings like vibration, lights, etc. are duplicated here because
+        // before Android introduced notification channels (Android < 8.0) the
+        // styling was made on a per-notification basis.
+        final NotificationTemplate template = new NotificationTemplate.Builder(NOTIFICATION_CHANNEL_ID)
+                .swipeToDismissEnabled(false)
+                .title("Your notification title!")
+                .iconId(R.drawable.ic_stat_notify_default)
+                .vibrationEnabled(true)
+                .vibrationPattern(new long[]{100, 200, 100, 300})
+                .soundEnabled(true)
+                .soundResourceUri(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM))
+                .circleColor(ContextCompat.getColor(SampleApplication.this, R.color.primary))
+                .ledEnabled(true)
+                .ledColor(Color.BLUE)
+                .ledOnMS(2000)
+                .ledOffMS(1000)
+                .build();
 
         Catapush.getInstance()
             .setNotificationIntent((catapushMessage, context) -> {
@@ -419,34 +434,13 @@ public class MyApplication extends MultiDexApplication {
             })
             .init(
                 this,
-                NOTIFICATION_CHANNEL_ID,
                 Collections.emptyList(), // Push notification services modules will be configured here, leave empty for now
+                template,
+                null, // You can pass more templates here if you want to support multiple notification channels
                 new Callback() {
                     @Override
                     public void success(Boolean response) {
                         Log.d("MyApp", "Catapush has been successfully initialized");
-
-                        // This is the notification template that the Catapush SDK uses to build
-                        // the status bar notification shown to the user.
-                        // Some settings like vibration, lights, etc. are duplicated here because
-                        // before Android introduced notification channels (Android < 8.0) the
-                        // styling was made on a per-notification basis.
-                        final NotificationTemplate template = NotificationTemplate.builder()
-                                .swipeToDismissEnabled(false)
-                                .title("Your notification title!")
-                                .iconId(R.drawable.ic_stat_notify_default)
-                                .vibrationEnabled(true)
-                                .vibrationPattern(new long[]{100, 200, 100, 300})
-                                .soundEnabled(true)
-                                .soundResourceUri(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM))
-                                .circleColor(ContextCompat.getColor(SampleApplication.this, R.color.primary))
-                                .ledEnabled(true)
-                                .ledColor(Color.BLUE)
-                                .ledOnMS(2000)
-                                .ledOffMS(1000)
-                                .build();
-
-                        Catapush.getInstance().setNotificationTemplate(template);
                     }
 
                     @Override
@@ -470,6 +464,26 @@ If you are defining a custom application class for your app for the first time, 
 ```
 
 Please note that, to be used, the `MultiDexApplication` requires your app to depend on the `androidx.multidex:multidex` dependency.
+
+<br/>
+
+#### Android notification channels support
+
+Starting in Android 8.0 (API level 26), all notifications must be assigned to a channel. For each channel, you can set the visual and auditory behavior that is applied to all notifications in that channel (see [Create and Manage Notification Channels](https://developer.android.com/training/notify-user/channels)).
+
+If you want to send Catapush messages to different Android notification channels you just need to:
+
+- Create all your notification channels using the Android `NotificationManager` in your implementation of the `Application.onCreate(…)` method, before the Catapush initialization
+- Create a `NotificationTemplate` instance for every notification channel using the `new NotificationTemplate.Builder(String notificationChannelId)` builder. The notification channel ID must match the one you used to create the notification channel in the `NotificationManager`
+- Initialize the Catapush SDK passing the main/default template as the 3rd parameter and all the orhers in a `Collection<NotificationManager>` instance as the 4th parameter
+
+To test your app and Catapush SDK configuration send a Catapush message to your phone setting its `channel` attribute to the same value used as notification channel ID in your app: the messages will be delivered to the correct notification channel and will style the notification using the appropriate template.
+
+Messages received without the `channel` attribute set or set with a value that doesn't match any of the `NotificationTemplate` IDs will be posted in the Android `NotificationManager` using the main/default template.
+
+To update the styling of a notification channel after the Catapush SDK initialization you can use the `Catapush.updateNotificationTemplate(…)` method.
+
+<br/>
 
 #### RxJava catch-all error handler
 
@@ -604,7 +618,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:gms:11.1.4')
+implementation('com.catapush.catapush-android-sdk:gms:11.2.0')
 ```
 
 #### Google Mobile Services Gradle plugin configuration
@@ -669,7 +683,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms:11.1.4')
+implementation('com.catapush.catapush-android-sdk:hms:11.2.0')
 ```
 
 #### OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService
@@ -679,7 +693,7 @@ If you're already using Huawei Push Kit to deliver push notifications to your ap
 In your `app/build.gradle`, in the dependencies block, replace the `hms` module with the `hms-base` module:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms-base:11.1.4')
+implementation('com.catapush.catapush-android-sdk:hms-base:11.2.0')
 ```
 
 Then edit your `HmsMessageService` to relay the push notifications and the refreshed push tokens:
@@ -753,6 +767,21 @@ Catapush.getInstance().init(
 ```
 
 Please note that the order of the modules in the list will be taken into account when electing the push service to be used on a device: if both services are available and working then the Catapush SDK will pick the first in the list.
+
+<br/><br/>
+
+## Migration from Catapush 11.1.x
+
+Catapush 11.2.x added support to Android notification channels.<br/>
+To allow the customization of the notification styling for each channel we had to update our SDK interface to let you provide one or more `NotificationTemplate`s to the SDK initialization.
+<br/><br/>
+The following changes to your app's code are required:
+
+- The Android notification channel ID has to be moved moved from the `Catapush.init(…)` method to the `new NotificationTemplate.Builder(String notificationChannelId)` builder
+- The `setNotificationTemplate(…)` method has been removed, now the main/default `NotificationTemplate` has to be passed as the 3rd argument of the `Catapush.init(…)` method
+- If you want to configure one or more `NotificationTemplate`s other than the main/default one, pass them in a `Collection<NotificationTemplate>` as the 4th parameter of the `Catapush.init(…)` method, otherwise set this parameter to `null`
+
+A new metod `Catapush.updateNotificationTemplate(…)` has been added to allow the customization of a notification channel styling after the Catapush SDK initialization.
 
 <br/><br/>
 
