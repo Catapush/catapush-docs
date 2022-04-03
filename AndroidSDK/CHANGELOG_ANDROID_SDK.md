@@ -60,6 +60,10 @@ This release contains updated dependencies and a new methods in the Catapush int
 
 Catapush 11.0.x targets Android 11.0 (API 30) and requires Android 5.0 (API 21).
 
+#### 11.0.6 (02/04/2022)
+
+- Update com.huawei.hms:push dependency to version 6.3.0.304 to avoid Google Play Store policy violations
+
 #### 11.0.5 (03/09/2021)
 
 - Improvements to the `Catapush.notifyMessageOpened(…)` implementation
