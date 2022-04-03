@@ -6,12 +6,20 @@
 
 Catapush 11.2.x targets Android 11.0 (API 30) and requires Android 5.0 (API 21).
 
-This release adds the ability to specify different notification templates for different messages channels.
+This release adds the ability to specify different notification templates for different Android native notification channels.
 
-To deliver a message to a specific Android native notification channel just set its channel ID string into the "channel" field of the Catapush message you are sending.
+To deliver a Catapush message to a specific Android native notification channel just set its channel ID string into the `channel` field of the Catapush message you are sending.
 Then initialize the Catapush instance in your app providing a list of `NotificationTemplate` instances, one for each native notification channel you'd like to deliver Catapush messages to.
 
 See the [Catapush API docs](DOCUMENTATION_ANDROID_SDK.md#migration-from-catapush-111x) for details on how to migrate your code.
+
+#### 11.2.1 (03/04/2022)
+
+- Update com.huawei.hms:push dependency to version 6.3.0.304 to avoid Google Play Store policy violations
+
+#### 11.2.0 (08/03/2022)
+
+- Adds message delivery to different Android native notification channels
 
 ## Catapush 11.1.x
 
