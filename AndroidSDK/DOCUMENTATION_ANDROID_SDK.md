@@ -4,7 +4,7 @@
 
 ## Index
 
-*   [Catapush 11.2.x](#catapush-112x)
+*   [Catapush 12.0.x](#catapush-120x)
 *   [Project prerequisites](#project-prerequisites)
 *   [Core module](#core-module)
     *   [Include the Core module as a dependency](#include-the-core-module-as-a-dependency)
@@ -26,15 +26,15 @@
     *   [OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService](#optional-integrate-catapush-hms-with-a-pre-existent-hmsmessageservice)
     *   [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)
     *   [Update your Catapush initialization to use the HMS module](#update-your-catapush-initialization-to-use-the-hms-module)
-*   [Migration from Catapush 11.1.x](#migration-from-catapush-111x)
-*   [Migration from Catapush 10.2.x](#migration-from-catapush-102x)
+*   [Migration from Catapush 11.2.x to 12.0.x](#migration-from-catapush-112x)
+*   [Migration from Catapush 11.1.x to 11.2.x](#migration-from-catapush-111x)
+*   [Migration from Catapush 10.2.x to 11.1.x](#migration-from-catapush-102x)
 *   [Advanced](#advanced)
     *   [Handling client-side push services errors](#handling-client-side-push-services-errors)
     *   [Notification management](#notification-management)
     *   [Disable received messages visualization](#disable-received-messages-visualization)
     *   [Pause received messages visualization](#pause-received-messages-visualization)
     *   [Hide Notifications when User is in your Messages List](#hide-notifications-when-user-is-in-your-messages-list)
-    *   [Status Bar Notification](#status-bar-notification)
     *   [Sending Read Notification Receipt Manually](#sending-read-notification-receipt-manually)
     *   [Catapush conversation channels feature](#catapush-conversation-channels-feature)
     *   [Load and display messages attachment](#load-and-display-messages-attachment)
@@ -49,15 +49,15 @@
     *   [What are battery and bandwidth usages?](#what-are-battery-and-bandwidth-usages)
     *   [There is an example project available?](#there-is-an-example-project-available)
 
-## Catapush 11.2.x
+## Catapush 12.0.x
 
-Catapush 11.2.x targets Android 11.0 (API 30) and requires Android 4.1 (API 21).
+Catapush 12.0.x targets Android 12.0 (API 31) and requires Android 5.0 (API 21).
 
 ## Project prerequisites
 
 Catapush Android SDK assumes that your Android project:
 
-1. Has target SDK version set to 30 ([Android 11.0](https://developer.android.com/studio/releases/platforms#11))
+1. Has target SDK version set to 31 ([Android 12.0](https://developer.android.com/studio/releases/platforms#12))
 2. Has minimum SDK version greater than or equal to 21 ([Android 5.0](https://developer.android.com/studio/releases/platforms#5.0))
 
 ### Core module
@@ -65,11 +65,11 @@ Catapush Android SDK assumes that your Android project:
 Catapush core is the main module of our SDK, it allows your app to send and receive messages while it’s in foreground.
 
 To enable messages background delivery (i.e. when the device is in stand-by) you’ll need a push notification service plugin.  
-See the Catapush GMS module or the Catapush HMS module or both.
+See the Catapush GMS module or the Catapush HMS module sections below to install one or more push services provider.
 
 #### Include the Core module as a dependency
 
-At the top of _app/build.gradle_, before the _android_ block, add the Jitpack repository to the _repositories_ section:
+At the top of the `app/build.gradle` file, before the _android_ block, add the Jitpack repository to the _repositories_ section:
 
 ```groovy
 repositories {
@@ -80,7 +80,7 @@ repositories {
 Then, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:core:11.2.1')
+implementation('com.catapush.catapush-android-sdk:core:12.0.0')
 ```
 
 #### Update your app AndroidManifest.xml
@@ -92,106 +92,6 @@ Set your Catapush app key declaring this meta-data inside the application node o
     android:value="YOUR_APP_KEY" />
 ```
 _YOUR_APP_KEY_ is the _AppKey_ of your Catapush App (go to your [Catapush App configuration dashboard](https://www.catapush.com/panel/dashboard), select your App by clicking "View Panel" and then click on App details section)
-
-Then you need to declare a custom Catapush broadcast receiver and a permission to secure its broadcasts.
-
-Add this permission definition in your `AndroidManifest.xml`:
-```xml
-<permission
-    android:name="${applicationId}.permission.CATAPUSH_MESSAGE"
-    android:protectionLevel="signature" />
-```
-
-Then, in the `<application>` block add this receiver:
-```xml
-<receiver
-    android:name=".MyReceiver"
-    android:permission="${applicationId}.permission.CATAPUSH_MESSAGE">
-    <intent-filter>
-        <action android:name="com.catapush.library.action.INVALID_LIBRARY" />
-        <action android:name="com.catapush.library.action.NETWORK_ERROR" />
-        <action android:name="com.catapush.library.action.PUSH_SERVICE_ERROR" />
-        <action android:name="com.catapush.library.action.CONNECTED" />
-        <action android:name="com.catapush.library.action.DISCONNECTED" />
-        <action android:name="com.catapush.library.action.CONNECTING" />
-        <action android:name="com.catapush.library.action.MESSAGE_RECEIVED" />
-        <action android:name="com.catapush.library.action.MESSAGE_OPENED" />
-        <action android:name="com.catapush.library.action.MESSAGE_OPENED_CONFIRMED" />
-        <action android:name="com.catapush.library.action.MESSAGE_SENT" />
-        <action android:name="com.catapush.library.action.MESSAGE_SENT_CONFIRMED" />
-        <category android:name="${applicationId}" />
-    </intent-filter>
-</receiver>
-```
-
-#### Create the custom Catapush broadcasts receiver
-
-To communicate with Catapush, you can extend `CatapushReceiver` or `CatapushTwoWayReceiver` and implement the needed methods. You can copy/paste the following class:
-```java
-import android.content.Context;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import com.catapush.library.CatapushTwoWayReceiver;
-import com.catapush.library.exceptions.CatapushAuthenticationError;
-import com.catapush.library.exceptions.PushServicesException;
-import com.catapush.library.messages.CatapushMessage;
-
-public class MyReceiver extends CatapushTwoWayReceiver {
-
-    @Override
-    public void onConnecting(@NonNull Context context) {
-        Log.d("MyApp", "Connecting...");
-    }
-
-    @Override
-    public void onConnected(@NonNull Context context) {
-        Log.d("MyApp", "Connected");
-    }
-
-    @Override
-    public void onDisconnected(int errorCode, @NonNull Context context) {
-        Log.d("MyApp", "Disconnected: " + errorCode);
-    }
-
-    @Override
-    public void onMessageReceived(@NonNull CatapushMessage msg, @NonNull Context context) {
-        Log.d("MyApp", "Received message: " + msg.toString());
-    }
-
-    @Override
-    public void onMessageOpened(@NonNull CatapushMessage msg, @NonNull Context context) {
-        Log.d("MyApp", "Opened message: " + msg.toString());
-    }
-
-    @Override
-    public void onMessageOpenedConfirmed(@NonNull CatapushMessage message, @NonNull Context context) {
-        Log.d("MyApp", "Opened message confirmed: " + msg.toString());
-    }
-
-    @Override
-    public void onRegistrationFailed(@NonNull CatapushAuthenticationError error, @NonNull Context context) {
-        Log.e("MyApp", "Error message: " + error.getMessage());
-    }
-
-    @Override
-    public void onPushServicesError(@NonNull PushServicesException error, @NonNull Context context) {
-        Log.w("MyApp", "Push service error: " + error.getErrorMessage());
-    }
-
-    @Override
-    public void onMessageSent(@NonNull CatapushMessage message, @NonNull Context context) {
-        Log.d("MyApp", "Message marked as sent: " + message.toString());
-    }
-
-    @Override
-    public void onMessageSentConfirmed(@NonNull CatapushMessage message, @NonNull Context context) {
-        Log.d("MyApp", "Message sent and delivered: " + message.toString());
-    }
-
-}
-```
 
 #### Error handling
 
@@ -378,30 +278,75 @@ public class MyApplication extends MultiDexApplication {
 
         setupRxErrorHandler(); // Required: see section 'RxJava catch-all error handler' for the implementation
 
-        // This is the Android system notification channel that will be used by the Catapush SDK
-        // to notify the incoming messages since Android 8.0. It is important that the channel
-        // is created before starting Catapush.
-        // See https://developer.android.com/training/notify-user/channels
-        NotificationManager nm = ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));
-        if (nm != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channel = new NotificationChannel(
-                    NOTIFICATION_CHANNEL_ID,
-                    getString(R.string.your_notification_channel_name),
-                    NotificationManager.IMPORTANCE_HIGH);
-            // Customize your notification appearance here (Android >= 8.0)
-            // it's possible to customize a channel only on creation
-            channel.enableVibration(true);
-            channel.setVibrationPattern(new long[]{100, 200, 100, 300});
-            channel.enableLights(true);
-            channel.setLightColor(ContextCompat.getColor(this, R.color.primary));
-            nm.createNotificationChannel(channel);
-        }
+        // This is the object that receives the Catapush SDK events
+        ICatapushEventDelegate catapushEventDelegate = new ICatapushEventDelegate() {
+            @Override
+            public void onRegistrationFailed(@NonNull CatapushAuthenticationError error) {
+                Log.e("MyApp", "Error message: " + error.getMessage());
+            }
+
+            @Override
+            public void onConnecting() {
+                Log.d("MyApp", "Connecting...");
+            }
+
+            @Override
+            public void onConnected() {
+                Log.d("MyApp", "Connected");
+            }
+
+            @Override
+            public void onDisconnected(@NonNull CatapushConnectionError error) {
+                Log.d("MyApp", "Disconnected: " + error.getReasonCode());
+            }
+
+            @Override
+            public void onPushServicesError(@NonNull PushServicesException e) {
+                // TODO if you are not using the GMS or HMS modules in your app then remove the corresponding code block from this method
+                if (PushPlatformType.GMS.name().equals(e.getPlatform()) && e.isUserResolvable()) {
+                    // It's a GMS error and it's user resolvable: show a notification to the user
+                    Log.w(SampleApplication.class.getSimpleName(), "GMS error: " + e.getErrorMessage());
+                    GoogleApiAvailability gmsAvailability = GoogleApiAvailability.getInstance();
+                    gmsAvailability.setDefaultNotificationChannelId(
+                            SampleApplication.this, SampleApplication.NOTIFICATION_CHANNEL_ID);
+                    gmsAvailability.showErrorNotification(SampleApplication.this, e.getErrorCode());
+                } else if (PushPlatformType.HMS.name().equals(e.getPlatform()) && e.isUserResolvable()) {
+                    // It's a HMS error and it's user resolvable: show a notification to the user
+                    Log.w(SampleApplication.class.getSimpleName(), "HMS error: " + e.getErrorMessage());
+                    HuaweiApiAvailability hmsAvailability = HuaweiApiAvailability.getInstance();
+                    hmsAvailability.showErrorNotification(SampleApplication.this, e.getErrorCode());
+                }
+            }
+
+            @Override
+            public void onMessageReceived(@NonNull CatapushMessage message) {
+                Log.d("MyApp", "Received message: " + message.toString());
+            }
+
+            @Override
+            public void onMessageOpened(@NonNull CatapushMessage message) {
+                Log.d("MyApp", "Opened message: " + msg.toString());
+            }
+
+            @Override
+            public void onMessageOpenedConfirmed(@NonNull CatapushMessage message) {
+                Log.d("MyApp", "Opened message confirmed: " + msg.toString());
+            }
+
+            @Override
+            public void onMessageSent(@NonNull CatapushMessage message) {
+                Log.d("MyApp", "Message marked as sent: " + message.toString());
+            }
+
+            @Override
+            public void onMessageSentConfirmed(@NonNull CatapushMessage message) {
+                Log.d("MyApp", "Message sent and delivered: " + message.toString());
+            }
+        };
 
         // This is the notification template that the Catapush SDK uses to build
         // the status bar notification shown to the user.
-        // Some settings like vibration, lights, etc. are duplicated here because
-        // before Android introduced notification channels (Android < 8.0) the
-        // styling was made on a per-notification basis.
+        // Customize this template to fit your needs.
         final NotificationTemplate template = new NotificationTemplate.Builder(NOTIFICATION_CHANNEL_ID)
                 .swipeToDismissEnabled(false)
                 .title("Your notification title!")
@@ -416,6 +361,32 @@ public class MyApplication extends MultiDexApplication {
                 .ledOnMS(2000)
                 .ledOffMS(1000)
                 .build();
+
+        // This is the Android system notification channel that will be used by the Catapush SDK
+        // to notify the incoming messages since Android 8.0. It is important that the channel
+        // is created before starting Catapush.
+        // Customize this channel to fit your needs.
+        // See https://developer.android.com/training/notify-user/channels
+        NotificationManager nm = ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));
+        if (nm != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelName = "Catapush messages";
+            NotificationChannel channel = nm.getNotificationChannel(notificationTemplate.getNotificationChannelId());
+            if (channel == null) {
+                channel = new NotificationChannel(notificationTemplate.getNotificationChannelId(), channelName, NotificationManager.IMPORTANCE_HIGH);
+                channel.enableVibration(notificationTemplate.isVibrationEnabled());
+                channel.setVibrationPattern(notificationTemplate.getVibrationPattern());
+                channel.enableLights(notificationTemplate.isLedEnabled());
+                channel.setLightColor(notificationTemplate.getLedColor());
+                if (notificationTemplate.isSoundEnabled()) {
+                AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT)
+                    .build();
+                channel.setSound(notificationTemplate.getSoundResourceUri(), audioAttributes);
+                }
+            }
+            nm.createNotificationChannel(channel);
+        }
 
         Catapush.getInstance()
             .setNotificationIntent((catapushMessage, context) -> {
@@ -434,6 +405,7 @@ public class MyApplication extends MultiDexApplication {
             })
             .init(
                 this,
+                catapushEventDelegate,
                 Collections.emptyList(), // Push notification services modules will be configured here, leave empty for now
                 template,
                 null, // You can pass more templates here if you want to support multiple notification channels
@@ -477,7 +449,7 @@ If you want to send Catapush messages to different Android notification channels
 - Create a `NotificationTemplate` instance for every notification channel using the `new NotificationTemplate.Builder(String notificationChannelId)` builder. The notification channel ID must match the one you used to create the notification channel in the `NotificationManager`
 - Initialize the Catapush SDK passing the main/default template as the 3rd parameter and all the orhers in a `Collection<NotificationManager>` instance as the 4th parameter
 
-To test your app and Catapush SDK configuration send a Catapush message to your phone setting its `channel` attribute to the same value used as notification channel ID in your app: the messages will be delivered to the correct notification channel and will style the notification using the appropriate template.
+To test your app and Catapush SDK configuration send a Catapush message to your phone setting its `channel` attribute to the same value used as notification channel ID in your app: the messages will be delivered to the correct notification channel and the notification will be styled using the appropriate template.
 
 Messages received without the `channel` attribute set or set with a value that doesn't match any of the `NotificationTemplate` IDs will be posted in the Android `NotificationManager` using the main/default template.
 
@@ -565,9 +537,9 @@ You can ignore those warning but we suggest you to guide your users through the 
 
 #### Handle notification taps
 
-When the user taps on the status bar notification of a message received through Catapush, the `PendingIntent` you created in the `Catapush.setNotificationIntent(IIntentProvider)` method will be sent to the `Activity` you set as target.
+When the user taps on the status bar notification of a message received through Catapush, the `PendingIntent` you created in the `Catapush.setNotificationIntent(IIntentProvider)` method will be sent to the `Activity` you set as the `Intent` target.
 
-In your `Activity` implementation you'll need to handle this `Intent` in the `onCreate` and `onNewIntent` callbacks like this:
+In your target `Activity` implementation you'll need to handle this `Intent` in the `onCreate` and `onNewIntent` callbacks like this:
 ```java
 @Override
 protected void onCreate(Bundle savedInstanceState) {
@@ -618,7 +590,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:gms:11.2.1')
+implementation('com.catapush.catapush-android-sdk:gms:12.0.0')
 ```
 
 #### Google Mobile Services Gradle plugin configuration
@@ -633,8 +605,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.1'
-        classpath 'com.google.gms:google-services:4.3.4' 
+        classpath 'com.android.tools.build:gradle:7.2.0'
+        classpath 'com.google.gms:google-services:4.3.10' 
     }
 }
 ```
@@ -659,7 +631,7 @@ In your `Application.onCreate()` method add the `CatapushGMS.INSTANCE` to the SD
 ```java
 Catapush.getInstance().init(
     this,
-    NOTIFICATION_CHANNEL_ID,
+    catapushEventDelegate,
     Collections.singletonList(CatapushGms.INSTANCE), // GMS module is enabled here
     …
 );
@@ -683,7 +655,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms:11.2.1')
+implementation('com.catapush.catapush-android-sdk:hms:12.0.0')
 ```
 
 #### OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService
@@ -693,7 +665,7 @@ If you're already using Huawei Push Kit to deliver push notifications to your ap
 In your `app/build.gradle`, in the dependencies block, replace the `hms` module with the `hms-base` module:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms-base:11.2.1')
+implementation('com.catapush.catapush-android-sdk:hms-base:12.0.0')
 ```
 
 Then edit your `HmsMessageService` to relay the push notifications and the refreshed push tokens:
@@ -731,8 +703,8 @@ buildscript {
         maven { url 'https://developer.huawei.com/repo/' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.1'
-        classpath 'com.huawei.agconnect:agcp:1.4.2.201' 
+        classpath 'com.android.tools.build:gradle:7.2.0'
+        classpath 'com.huawei.agconnect:agcp:1.6.5.300' 
     }
 }
 ```
@@ -749,7 +721,7 @@ In your `Application.onCreate()` method add the `CatapushGMS.INSTANCE` to the SD
 ```java
 Catapush.getInstance().init(
        this,
-       NOTIFICATION_CHANNEL_ID,
+       catapushEventDelegate,
        Collections.singletonList(CatapushHms.INSTANCE), // HMS module is enabled here
        …
 );
@@ -760,13 +732,51 @@ If you want to use both GMS and HMS module just pass both to the Catapush initia
 ```java
 Catapush.getInstance().init(
        this,
-       NOTIFICATION_CHANNEL_ID,
+       catapushEventDelegate,
        Arrays.asList(CatapushGms.INSTANCE, CatapushHms.INSTANCE), // GMS and HMS module are enabled here
        …
 );
 ```
 
 Please note that the order of the modules in the list will be taken into account when electing the push service to be used on a device: if both services are available and working then the Catapush SDK will pick the first in the list.
+
+<br/><br/>
+
+## Migration from Catapush 11.2.x
+
+To migrate your previous Catapush 11.2.x integration to Catapush 12.0.x you just need to follow this steps:
+
+- Remove the custom permission declared in your `AndroidManifest.xml`, the lines to be removed will look like this:
+```xml
+    <permission
+        android:name="${applicationId}.permission.CATAPUSH_MESSAGE"
+        android:protectionLevel="signature" />
+```
+- Remove the your `CatapushReceiver` implementation declaration from your `AndroidManifest.xml`, the lines to be removed will look like this:
+```xml
+    <receiver
+        android:name=".ExampleCatapushReceiver"
+        android:permission="${applicationId}.permission.CATAPUSH_MESSAGE">
+        <intent-filter>
+            <action android:name="com.catapush.library.action.INVALID_LIBRARY"/>
+            <action android:name="com.catapush.library.action.NETWORK_ERROR"/>
+            <action android:name="com.catapush.library.action.PUSH_SERVICE_ERROR"/>
+            <action android:name="com.catapush.library.action.CONNECTED"/>
+            <action android:name="com.catapush.library.action.DISCONNECTED"/>
+            <action android:name="com.catapush.library.action.CONNECTING"/>
+            <action android:name="com.catapush.library.action.MESSAGE_RECEIVED"/>
+            <action android:name="com.catapush.library.action.MESSAGE_OPENED"/>
+            <action android:name="com.catapush.library.action.MESSAGE_OPENED_CONFIRMED"/>
+            <action android:name="com.catapush.library.action.MESSAGE_SENT"/>
+            <action android:name="com.catapush.library.action.MESSAGE_SENT_CONFIRMED"/>
+            <category android:name="${applicationId}"/>
+        </intent-filter>
+    </receiver>
+```
+- In the `Application` class of you app, create a new object that implements the `ICatapushEventDelegate` interface, this replaces the `CatapushReceiver` that you previously implemented: just move your code from the `CatapushReceiver` methods body to the corrisponding methods of `ICatapushEventDelegate`
+- In the `Application` class of you app, update the `Catapush.init(…)` invocation to pass your instance of the `ICatapushEventDelegate` interface as the 2nd argument
+- Delete the class that extends `CatapushReceiver`
+- The `Catapush.isRunning()` method has been replaced by the new `Catapush.isConnected()` method
 
 <br/><br/>
 
@@ -953,25 +963,9 @@ public void onPause() {
 }
 ```
 
-### Status Bar Notification
-
-When you decide to use the Catapush automatic received messages visualization, you can detect the tap on the status bar notification with your subclass of `CatapushReceiver` or  `CatapushTwoWayReceiver`.
-
-In the following example, when the user taps a message notification, the `onNotificationClicked` callback is triggered and the appropriate `CatapushMessage` instance is passed as argument. The example shows how to start an `Activity` on this tap event:
-```java
-@Override
-public void onNotificationClicked(CatapushMessage catapushMessage, Context context) {
-    Log.d("MyApp", "Opened Message: " + catapushMessage);
-
-    Intent intent = new Intent(context, MainActivity.class);
-    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-    context.startActivity(intent);
-}
-```
-
 ### Sending Read Notification Receipt Manually
 
-If you decide to disable default Push Notification management, you have to manually report every message opening:
+If you're not using the Catapush UI components, you have to manually report every message opening:
 
 ```java
 Catapush.getInstance().notifyMessageOpened(catapushMessage.id());
@@ -1120,7 +1114,7 @@ To give higher priority to GMS:
 ```java
 Catapush.getInstance().init(
         context,
-        CHANNEL_ID,
+        catapushEventDelegate,
         Arrays.asList(CatapushGms.INSTANCE, CatapushHms.INSTANCE),
         ...
 ```
@@ -1129,7 +1123,7 @@ To give higher priority to HMS (suggested only if your app has been explicitly a
 ```java
 Catapush.getInstance().init(
         context,
-        CHANNEL_ID,
+        catapushEventDelegate,
         Arrays.asList(CatapushHms.INSTANCE, CatapushGms.INSTANCE),
         ...
 ```
@@ -1155,7 +1149,7 @@ If you need to to receive Catapush messages only when your app is in the foregro
 ```java
 Catapush.getInstance().init(
         context,
-        CHANNEL_ID,
+        catapushEventDelegate,
         Collections.emptyList(),
         ...
 ```

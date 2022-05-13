@@ -2,6 +2,26 @@
 
 # Catapush Android SDK Changelog
 
+## Catapush 12.0.x
+
+Catapush 12.0.x targets Android 12.0 (API 31) and requires Android 5.0 (API 21).
+- Updated Kotlin to version 1.6.21
+- Updated AndroidX Core to 1.7.0
+- Updated Dagger to version 2.42
+- Updated Firebase Messaging to version 23.0.4
+- Updated HMS Push Kit to version 6.3.0.304
+
+This release adds the ability to specify different notification templates for different Android native notification channels.
+
+To deliver a Catapush message to a specific Android native notification channel just set its channel ID string into the `channel` field of the Catapush message you are sending.
+Then initialize the Catapush instance in your app providing a list of `NotificationTemplate` instances, one for each native notification channel you'd like to deliver Catapush messages to.
+
+See the [Catapush API docs](DOCUMENTATION_ANDROID_SDK.md#migration-from-catapush-111x) for details on how to migrate your code.
+
+#### 12.0.0 (13/05/2022)
+
+- Update com.huawei.hms:push dependency to version 6.3.0.304 to avoid Google Play Store policy violations
+
 ## Catapush 11.2.x
 
 Catapush 11.2.x targets Android 11.0 (API 30) and requires Android 5.0 (API 21).

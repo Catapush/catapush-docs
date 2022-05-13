@@ -14,6 +14,38 @@
 
 Catapush SDK comes with a native ready-to-go solution to display your messages.
 
+To use it, you have to include the UI module as a dependency.
+In your `app/build.gradle`, in the dependencies block, add a new implementation:
+
+```groovy
+implementation('com.catapush.catapush-android-sdk:ui:12.0.0')
+```
+
+Then you have to initialize the `CatapushUi` as soon as the `Catapush` instance is initialized:
+```java
+Catapush.getInstance()
+  .init(
+      this,
+      catapushEventDelegate,
+      Collections.emptyList(),
+      template,
+      null,
+      new Callback() {
+          @Override
+          public void success(Boolean response) {
+            Log.d("MyApp", "Catapush has been successfully initialized");
+            CatapushUi.INSTANCE.init();
+          }
+
+          @Override
+          public void failure(@NonNull Throwable t) {
+            Log.d("MyApp", "Catapush initialization error: " + t.getMessage());
+          }
+      }
+  );
+```
+
+
 ## [Catapush RecyclerView Adapter](#catapush-recyclerview-adapter)
 
 Catapush SDK provides full support for `RecyclerView` via `CatapushRecyclerViewAdapter`. This adapter can receive a list of messages and display them in a stylish bubble cell:
