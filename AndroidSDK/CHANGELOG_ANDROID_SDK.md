@@ -18,6 +18,17 @@ Then initialize the Catapush instance in your app providing a list of `Notificat
 
 See the [Catapush API docs](DOCUMENTATION_ANDROID_SDK.md#migration-from-catapush-111x) for details on how to migrate your code.
 
+#### 12.0.2 (20/07/2022)
+- Improve SDK initialization performances
+- Update OkHttp dependency to version 4.10.0
+
+#### 12.0.1 (13/07/2022)
+
+- Adds the `onMessageReceivedConfirmed` method to the `ICatapushEventDelegate` interface, its implementation is **required**
+- Improve SDK initialization performances
+- Improve the messages delivery performances while the app is in background
+- Update GMS and HMS dependencies to improve Android 12 compatibility
+
 #### 12.0.0 (13/05/2022)
 
 - Update com.huawei.hms:push dependency to version 6.3.0.304 to avoid Google Play Store policy violations
