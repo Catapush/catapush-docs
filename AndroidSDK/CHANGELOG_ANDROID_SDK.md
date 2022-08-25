@@ -18,7 +18,10 @@ Then initialize the Catapush instance in your app providing a list of `Notificat
 
 See the [Catapush API docs](DOCUMENTATION_ANDROID_SDK.md#migration-from-catapush-111x) for details on how to migrate your code.
 
-#### 12.0.2 (20/07/2022)
+#### 12.0.3 (25/08/2022)
+- Fix `Catapush.logout(…)` implementation
+
+#### 12.0.2 (26/07/2022)
 - Improve SDK initialization performances
 - Update OkHttp dependency to version 4.10.0
 

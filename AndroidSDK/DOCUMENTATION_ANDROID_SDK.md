@@ -80,7 +80,7 @@ repositories {
 Then, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:core:12.0.2')
+implementation('com.catapush.catapush-android-sdk:core:12.0.3')
 ```
 
 #### Update your app AndroidManifest.xml
@@ -595,7 +595,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:gms:12.0.2')
+implementation('com.catapush.catapush-android-sdk:gms:12.0.3')
 ```
 
 #### Google Mobile Services Gradle plugin configuration
@@ -660,7 +660,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms:12.0.2')
+implementation('com.catapush.catapush-android-sdk:hms:12.0.3')
 ```
 
 #### OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService
@@ -670,7 +670,7 @@ If you're already using Huawei Push Kit to deliver push notifications to your ap
 In your `app/build.gradle`, in the dependencies block, replace the `hms` module with the `hms-base` module:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms-base:12.0.2')
+implementation('com.catapush.catapush-android-sdk:hms-base:12.0.3')
 ```
 
 Then edit your `HmsMessageService` to relay the push notifications and the refreshed push tokens:
