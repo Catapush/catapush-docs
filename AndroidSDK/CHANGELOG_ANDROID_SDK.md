@@ -18,11 +18,11 @@ Then initialize the Catapush instance in your app providing a list of `Notificat
 
 See the [Catapush API docs](DOCUMENTATION_ANDROID_SDK.md#migration-from-catapush-111x) for details on how to migrate your code.
 
-#### 12.0.5 (25/08/2022)
+#### 12.0.5 (29/09/2022)
 - Increase initialization timeout from 10s to 60s
 - Update HMS dependencies
 
-#### 12.0.4 (25/08/2022)
+#### 12.0.4 (22/09/2022)
 - Improve received messagge confirmations reliability
 - Improve connection availability observation and reactions
 - Update GMS dependencies
