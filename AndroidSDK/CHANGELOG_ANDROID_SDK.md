@@ -18,6 +18,10 @@ Then initialize the Catapush instance in your app providing a list of `Notificat
 
 See the [Catapush API docs](DOCUMENTATION_ANDROID_SDK.md#migration-from-catapush-111x) for details on how to migrate your code.
 
+#### 12.0.6 (11/10/2022)
+- Reduce the netowrk usage when receiving a message in the background
+- Suppress some unnecessary network activity logs
+
 #### 12.0.5 (29/09/2022)
 - Increase initialization timeout from 10s to 60s
 - Update HMS dependencies
