@@ -12,7 +12,12 @@ The main change is the introduction of the `ICatapushInitializer` interface: we 
 
 The second change is the removal of the the `Catapush.setNotificationIntent()`, its parameter is now passed as 5th parameter of the `Catapush.init(…)` method.
 
-## Catapush 12.1.1 (12/10/2022)
+## Catapush 12.1.1 (10/01/2023)
+
+- Update GMS dependencies
+- Update HMS dependencies
+
+## Catapush 12.1.0 (05/12/2022)
 
 - Improved initialization sequence using the new `ICatapushInitializer` interface
 - Removed the `Catapush.setNotificationIntent(…)` method and moved its functionality to the `Catapush.init(…)` method
