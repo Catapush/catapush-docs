@@ -4,7 +4,7 @@
 
 ## Index
 
-*   [Catapush 12.0.x](#catapush-120x)
+*   [Catapush 12.1.x](#catapush-121x)
 *   [Project prerequisites](#project-prerequisites)
 *   [Core module](#core-module)
     *   [Include the Core module as a dependency](#include-the-core-module-as-a-dependency)
@@ -26,6 +26,7 @@
     *   [OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService](#optional-integrate-catapush-hms-with-a-pre-existent-hmsmessageservice)
     *   [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)
     *   [Update your Catapush initialization to use the HMS module](#update-your-catapush-initialization-to-use-the-hms-module)
+*   [Migration from Catapush 12.0.x to 12.1.x](#migration-from-catapush-120x)
 *   [Migration from Catapush 11.2.x to 12.0.x](#migration-from-catapush-112x)
 *   [Migration from Catapush 11.1.x to 11.2.x](#migration-from-catapush-111x)
 *   [Migration from Catapush 10.2.x to 11.1.x](#migration-from-catapush-102x)
@@ -49,9 +50,9 @@
     *   [What are battery and bandwidth usages?](#what-are-battery-and-bandwidth-usages)
     *   [There is an example project available?](#there-is-an-example-project-available)
 
-## Catapush 12.0.x
+## Catapush 12.1.x
 
-Catapush 12.0.x targets Android 12.0 (API 31) and requires Android 5.0 (API 21).
+Catapush 12.1.x targets Android 12.0 (API 31) and requires Android 5.0 (API 21).
 
 ## Project prerequisites
 
@@ -80,7 +81,7 @@ repositories {
 Then, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:core:12.0.6')
+implementation('com.catapush.catapush-android-sdk:core:12.1.0')
 ```
 
 #### Update your app AndroidManifest.xml
@@ -595,7 +596,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:gms:12.0.6')
+implementation('com.catapush.catapush-android-sdk:gms:12.1.0')
 ```
 
 #### Google Mobile Services Gradle plugin configuration
@@ -660,7 +661,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms:12.0.6')
+implementation('com.catapush.catapush-android-sdk:hms:12.1.0')
 ```
 
 #### OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService
@@ -670,7 +671,7 @@ If you're already using Huawei Push Kit to deliver push notifications to your ap
 In your `app/build.gradle`, in the dependencies block, replace the `hms` module with the `hms-base` module:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms-base:12.0.6')
+implementation('com.catapush.catapush-android-sdk:hms-base:12.1.0')
 ```
 
 Then edit your `HmsMessageService` to relay the push notifications and the refreshed push tokens:
@@ -746,6 +747,65 @@ Catapush.getInstance().init(
 Please note that the order of the modules in the list will be taken into account when electing the push service to be used on a device: if both services are available and working then the Catapush SDK will pick the first in the list.
 
 <br/><br/>
+
+## Migration from Catapush 12.0.x
+
+To migrate your previous Catapush 12.0.x integration to Catapush 12.1.x you just need to follow this steps:
+
+- Implement the `ICatapushInitializer` interface: we suggest you to implement this interface in your app's `Application` class and invoke the `initCatapush()` in the `onCreate` method:
+```java
+public class App extends MultiDexApplication implements ICatapushInitializer {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        initCatapush();
+        ...
+    }
+    ...
+}
+```
+- Implement the `initCatapush()` method, moving all your code related to the Catapush initialization and customization from the `onCreate()` method to the new method and passing to the `Catapush.init(…)` the `ICatapushInitializer` instance as 2nd parameter and the parameter from the removed `Catapush.setNotificationIntent(…)` method as 5th parameter, here's a reference implementation:
+```java
+    @Override
+    public void initCatapush() {
+        NotificationManager nm = ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));
+        NotificationTemplate notificationTemplate1 = buildNotificationTemplate1(nm, this);
+        NotificationTemplate notificationTemplate2 = buildNotificationTemplate2(nm, this);
+
+        Catapush.getInstance().init(
+                this, // App as Context
+                this, // App as ICatapushInitializer, or your ICatapushInitializer instance
+                new SampleCatapushEventDelegate(this),
+                Arrays.asList(CatapushGms.INSTANCE, CatapushHms.INSTANCE),
+                (message, context) -> {
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.putExtra("MESSAGE", message);
+                    // Setting a unique data URI ensures that Android won't recycle the extras Bundle between different PendingIntent instances
+                    intent.setData(Uri.parse("catapush://" + context.getPackageName() + "/message/" + message.id()));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    if (android.os.Build.VERSION.SDK_INT >= 23) {
+                        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+                    } else {
+                        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                    }
+                },
+                notificationTemplate1,
+                Collections.singletonList(notificationTemplate2),
+                new Callback<Boolean>() {
+                    @Override
+                    public void success(Boolean result) {
+                        Log.d("MyApp", "Catapush has been initialized: " + result);
+                    }
+
+                    @Override
+                    public void failure(@NonNull Throwable t) {
+                        Log.e("MyApp", "Can't init Catapush: " + t.getMessage());
+                    }
+                });
+    }
+```
+<br/><br/>
+
 
 ## Migration from Catapush 11.2.x
 
