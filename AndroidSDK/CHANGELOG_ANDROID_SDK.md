@@ -12,12 +12,15 @@ The main change is the introduction of the `ICatapushInitializer` interface: we 
 
 The second change is the removal of the the `Catapush.setNotificationIntent()`, its parameter is now passed as 5th parameter of the `Catapush.init(…)` method.
 
-## Catapush 12.1.1 (10/01/2023)
+#### 12.1.2 (31/01/2023)
+- Adds the option to skip the updated GMS security providers installation
+
+#### 12.1.1 (10/01/2023)
 
 - Update GMS dependencies
 - Update HMS dependencies
 
-## Catapush 12.1.0 (05/12/2022)
+#### 12.1.0 (05/12/2022)
 
 - Improved initialization sequence using the new `ICatapushInitializer` interface
 - Removed the `Catapush.setNotificationIntent(…)` method and moved its functionality to the `Catapush.init(…)` method
@@ -38,6 +41,9 @@ To deliver a Catapush message to a specific Android native notification channel 
 Then initialize the Catapush instance in your app providing a list of `NotificationTemplate` instances, one for each native notification channel you'd like to deliver Catapush messages to.
 
 See the [Catapush API docs](DOCUMENTATION_ANDROID_SDK.md#migration-from-catapush-111x) for details on how to migrate your code.
+
+#### 12.0.8 (31/01/2023)
+- Adds the option to skip the updated GMS security providers installation
 
 #### 12.0.7 (05/12/2022)
 - Fix threading and scheduling issues mainly affecting HUAWEI devices

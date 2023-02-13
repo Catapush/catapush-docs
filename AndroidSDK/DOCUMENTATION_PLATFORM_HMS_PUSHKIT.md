@@ -36,6 +36,7 @@ IMPORTANT: the HMS client libraries won't work unless this parameter is correctl
 ![AppGallery Connect, my project, general information](images/hms_pushkit_step5.png)
 
 **6** - Now take note of the `App ID` and `App secret` values, we'll need it later, then click on "agconnect-services.json" button and add this file in your Android Studio project `/app` subfolder.
+Make sure you've configured the `classpath com.huawei.agconnect:agcp:{version}` in the plugin section of the `build.gradle` file of your project and that you apply the AGCP plugin via `apply plugin: 'com.huawei.agconnect'` in the `build.gradle` file of your app.<br/>
 
 **7** - Visit [www.catapush.com/panel/dashboard](https://www.catapush.com/panel/dashboard) and login with your Catapush credentials.<br/>
 Select your app from the side menu and select "Platforms".<br/>

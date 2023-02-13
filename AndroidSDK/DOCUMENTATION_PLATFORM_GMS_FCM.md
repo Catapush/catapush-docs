@@ -20,7 +20,8 @@ Finally, confirm with "Register app" button.
 ![Register the Android app](images/gms_fcm_step3.png)
 
 **4** - Now click on "Download google-services.json" button and press "Next".<br/>
-Add this file in your Android Studio project /app subfolder.<br/>
+Add this file in your Android Studio project `/app` subfolder.<br/>
+Make sure you've configured the `classpath com.google.gms:google-services:{version}` in the plugin section of the `build.gradle` file of your project.<br/>
 Complete step 3 by clicking "Next" and step 4 by clicking "Skip this step" if you want to skip the app verification procedure.
 
 ![Download config file](images/gms_fcm_step4.png)
