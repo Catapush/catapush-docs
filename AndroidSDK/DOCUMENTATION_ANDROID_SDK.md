@@ -20,6 +20,7 @@
     *   [Include the GMS module as a dependency](#include-the-gms-module-as-a-dependency)
     *   [Google Mobile Services Gradle plugin configuration](#google-mobile-services-gradle-plugin-configuration)
     *   [Update your Catapush initialization to use the GMS module](#update-your-catapush-initialization-to-use-the-gms-module)
+    *   [OPTIONAL: integrate Catapush GMS with a pre-existent FirebaseMessagingService](#optional-integrate-catapush-gms-with-a-pre-existent-firebasemessagingservice)
 *   [Huawei Mobile Services (HMS) module](#huawei-mobile-services-hms-module)
     *   [Huawei Push Kit prerequisites](#huawei-push-kit-prerequisites)
     *   [Include the HMS module as a dependency](#include-the-hms-module-as-a-dependency)
@@ -32,7 +33,7 @@
 *   [Migration from Catapush 10.2.x to 11.1.x](#migration-from-catapush-102x)
 *   [Advanced](#advanced)
     *   [Handling client-side push services errors](#handling-client-side-push-services-errors)
-    *   [Notification management](#notification-management)
+    *   [Notification visualization](#notification-visualization)
     *   [Disable received messages visualization](#disable-received-messages-visualization)
     *   [Pause received messages visualization](#pause-received-messages-visualization)
     *   [Hide Notifications when User is in your Messages List](#hide-notifications-when-user-is-in-your-messages-list)
@@ -643,6 +644,31 @@ Catapush.getInstance().init(
 );
 ```
 
+#### OPTIONAL: integrate Catapush GMS with a pre-existent FirebaseMessagingService
+
+If you're already using Firebase Cloud Messaging to deliver push notifications to your app and thus you have already defined a custom `FirebaseMessagingService` you have to customize your implementation to relay to our SDK client library the push notifications intended for Catapush.
+
+To do so, edit your `FirebaseMessagingService` implementation to relay the push notifications and the refreshed push tokens:
+```java
+public class YourFirebaseMessagingService extends FirebaseMessagingService {
+
+    @Override
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
+        if (remoteMessage.getData().containsKey(Catapush.KEY_CATAPUSH_WAKEUP)) {
+            CatapushGms.INSTANCE.handleFcmWakeup(remoteMessage);
+        } else {
+            // Your push messages handling logic
+        }
+    }
+
+    @Override
+    public void onNewToken(@NonNull String refreshedToken) {
+        CatapushGms.INSTANCE.handleFcmNewToken(refreshedToken);
+        // Your push token handling logic
+    }
+}
+```
+
 ### Huawei Mobile Services (HMS) module
 Catapush HMS module is the integration of the SDK with Huawei Mobile Services / Push Kit, it allows your app to send and receive messages while it’s in background on Huawei devices.
 
@@ -674,7 +700,7 @@ In your `app/build.gradle`, in the dependencies block, replace the `hms` module 
 implementation('com.catapush.catapush-android-sdk:hms-base:12.1.1')
 ```
 
-Then edit your `HmsMessageService` to relay the push notifications and the refreshed push tokens:
+Then edit your `HmsMessageService` implementation to relay the push notifications and the refreshed push tokens:
 ```java
 public class YourHmsMessageService extends HmsMessageService {
 
@@ -683,14 +709,14 @@ public class YourHmsMessageService extends HmsMessageService {
         if (remoteMessage.getDataOfMap().containsKey(Catapush.KEY_CATAPUSH_WAKEUP)) {
             CatapushHms.INSTANCE.handleHmsWakeup(remoteMessage);
         } else {
-            // Your pre-existent push notification handling
+            // Your push messages handling logic
         }
     }
 
     @Override
     public void onNewToken(String refreshedToken) {
         CatapushHms.INSTANCE.handleHmsNewToken(refreshedToken);
-        // Send the refreshed push token to your server
+        // Your push token handling logic
     }
 
 }
@@ -966,7 +992,7 @@ public void onPushServicesError(@NonNull PushServicesException e, @NonNull Conte
 
 Note: if you are using just one of the two supported push services providers delete the other's code block to avoid compile issues.
 
-### Notification management
+### Notification visualization
 
 By default the received messages visualization is managed by the Catapush library, which builds status bar notifications and displays them in the Android notification tray following the notification template you provided on Catapush SDK initialization.
 

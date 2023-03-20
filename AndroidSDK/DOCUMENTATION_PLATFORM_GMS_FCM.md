@@ -6,40 +6,26 @@ These instructions will guide you on how to setup your Firebase project and your
 
 <br/>
 
-**1** - Visit [console.firebase.google.com](https://console.firebase.google.com) and click "Create a project"/"Add project", then type a project name and choose a country/region
+**1** - If you haven't yet, create a new Firebase project for your app: visit the [Firebase Console](https://console.firebase.google.com) and follow the project creation assistant.
 
-![Firebase Console](images/gms_fcm_step1.png)
+**2** - If if've never used any of the Firebase services in your app, configure the Firebase project and your app project following this integration guide: [Firebase Documentation - Android Setup](https://firebase.google.com/docs/android/setup)
 
-**2** - Select "Add app" then click on the Android logo.
+![Register the Android app in the Firebase project](images/gms_fcm_step3.png)
 
-![Project home page](images/gms_fcm_step2.png)
+**3** - Create a new authorization role in your Firebase project through this form: [Google Cloud Console - Create a new role](https://console.cloud.google.com/iam-admin/roles/create). Make sure that you've selected the correct project before continuing.
 
-**3** - Fill the form with the requested info: type your app package in "Android package name" and add an optional "App nickname".<br/>
-Finally, confirm with "Register app" button.
+Fill in the form with the following values:
+![Google Cloud Console, new role form](images/gms_fcm_role.jpg)
 
-![Register the Android app](images/gms_fcm_step3.png)
+**4** - Create a new service account that will use the new role through this form: [Google Cloud Console - Create a new service account](https://console.cloud.google.com/iam-admin/serviceaccounts/create)
 
-**4** - Now click on "Download google-services.json" button and press "Next".<br/>
-Add this file in your Android Studio project `/app` subfolder.<br/>
-Make sure you've configured the `classpath com.google.gms:google-services:{version}` in the plugin section of the `build.gradle` file of your project.<br/>
-Complete step 3 by clicking "Next" and step 4 by clicking "Skip this step" if you want to skip the app verification procedure.
+Fill in the form with the following values:
+![Google Cloud Console, new service account form](images/gms_fcm_serviceaccount.jpg)
 
-![Download config file](images/gms_fcm_step4.png)
+**5** - Once the service account is created, go to the "Keys" tab in its detail page and add a new key.<br/>
+Select the JSON format and download the private key file to you computer.
 
-**5** - Click on the gear icon then select "Project settings".
-
-![Project settings](images/gms_fcm_step5.png)
-
-**6** - In the "Service accounts" tab click "Create service account".
-
-![Service account](images/gms_fcm_step6.png)
-
-**7** - Click "Generate new private key" then confirm clicking "Generate key".<br/>
-Securely store the JSON file containing the key.
-
-![Service account](images/gms_fcm_step7.png)
-
-**8** - Visit [www.catapush.com/panel/dashboard](https://www.catapush.com/panel/dashboard) and login with your Catapush credentials.<br/>
+**6** - Visit the [Catapush Dashboard](https://www.catapush.com/panel/dashboard) and login with your Catapush credentials.<br/>
 Select your app from the side menu and select "Platforms".<br/>
 Enable "Use Service Account JSON", then select the file you downloaded at the previous step. Press "Save".
 
