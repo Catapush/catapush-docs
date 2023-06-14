@@ -2,6 +2,15 @@
 
 # Catapush Android SDK Changelog
 
+## Catapush 13.0.x
+
+Catapush 13.0.x is designed for Android 13.0 (API 33) and requires a minimum of Android 5.0 (API 21).
+
+This release includes compatibility updates for the latest Android version and updates its third-party dependencies.
+
+#### 13.0.0 (14/06/2023)
+- Andorid 13 compatibility
+
 ## Catapush 12.1.x
 
 Catapush 12.1.x targets Android 12.0 (API 31) and requires Android 5.0 (API 21).

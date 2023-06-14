@@ -4,13 +4,14 @@
 
 ## Index
 
-*   [Catapush 12.1.x](#catapush-121x)
+*   [Catapush 13.0.x](#catapush-130x)
 *   [Project prerequisites](#project-prerequisites)
 *   [Core module](#core-module)
     *   [Include the Core module as a dependency](#include-the-core-module-as-a-dependency)
     *   [Update your app AndroidManifest.xml](#update-your-app-androidmanifestxml)
     *   [Error handling](#error-handling)
     *   [Initialization](#initialization)
+    *   [Android notification runtime permission](#android-notification-runtime-permission)
     *   [Android notification channels support](#android-notification-channels-support)
     *   [RxJava catch-all error handler](#rxjava-catch-all-error-handler)
     *   [Start](#start)
@@ -27,6 +28,7 @@
     *   [OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService](#optional-integrate-catapush-hms-with-a-pre-existent-hmsmessageservice)
     *   [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)
     *   [Update your Catapush initialization to use the HMS module](#update-your-catapush-initialization-to-use-the-hms-module)
+*   [Migration from Catapush 12.1.x to 13.0.x](#migration-from-catapush-121x)
 *   [Migration from Catapush 12.0.x to 12.1.x](#migration-from-catapush-120x)
 *   [Migration from Catapush 11.2.x to 12.0.x](#migration-from-catapush-112x)
 *   [Migration from Catapush 11.1.x to 11.2.x](#migration-from-catapush-111x)
@@ -51,15 +53,15 @@
     *   [What are battery and bandwidth usages?](#what-are-battery-and-bandwidth-usages)
     *   [There is an example project available?](#there-is-an-example-project-available)
 
-## Catapush 12.1.x
+## Catapush 13.0.x
 
-Catapush 12.1.x targets Android 12.0 (API 31) and requires Android 5.0 (API 21).
+Catapush 13.0.x targets Android 13.0 (API 33) and requires Android 5.0 (API 21).
 
 ## Project prerequisites
 
 Catapush Android SDK assumes that your Android project:
 
-1. Has target SDK version set to 31 ([Android 12.0](https://developer.android.com/studio/releases/platforms#12))
+1. Has target SDK version set to 33 ([Android 13.0](https://developer.android.com/studio/releases/platforms#12))
 2. Has minimum SDK version greater than or equal to 21 ([Android 5.0](https://developer.android.com/studio/releases/platforms#5.0))
 
 ### Core module
@@ -82,7 +84,7 @@ repositories {
 Then, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:core:12.1.1')
+implementation('com.catapush.catapush-android-sdk:core:13.0.0')
 ```
 
 #### Update your app AndroidManifest.xml
@@ -464,6 +466,14 @@ To update the styling of a notification channel after the Catapush SDK initializ
 
 <br/>
 
+#### Android notification runtime permission
+Starting from Android 13.0 (API level 33), applications are required to explicitly request permission to display notifications in the system's status bar.
+
+To accomplish this, you'll need to declare the new `android.permission.POST_NOTIFICATIONS` permission in your app's `AndroidManifest.xml` file, and then update your app's UI/UX to prompt the user for this permission at the appropriate time.
+
+For more detailed information, refer to the official [Notification runtime permission](https://developer.android.com/develop/ui/views/notifications/notification-permission) documentation.
+
+
 #### RxJava catch-all error handler
 
 Catapush depends internally on RxJava. Since RxJava2 it's required for the app that includes the SDK to define a global error handler that prevents your app from crashing if any unhandleable error occurs in the library.
@@ -597,7 +607,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:gms:12.1.1')
+implementation('com.catapush.catapush-android-sdk:gms:13.0.0')
 ```
 
 #### Google Mobile Services Gradle plugin configuration
@@ -612,8 +622,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.0'
-        classpath 'com.google.gms:google-services:4.3.10' 
+        classpath 'com.android.tools.build:gradle:8.0.2'
+        classpath 'com.google.gms:google-services:4.3.15'
     }
 }
 ```
@@ -687,7 +697,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms:12.1.1')
+implementation('com.catapush.catapush-android-sdk:hms:13.0.0')
 ```
 
 #### OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService
@@ -697,7 +707,7 @@ If you're already using Huawei Push Kit to deliver push notifications to your ap
 In your `app/build.gradle`, in the dependencies block, replace the `hms` module with the `hms-base` module:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms-base:12.1.1')
+implementation('com.catapush.catapush-android-sdk:hms-base:13.0.0')
 ```
 
 Then edit your `HmsMessageService` implementation to relay the push notifications and the refreshed push tokens:
@@ -773,6 +783,14 @@ Catapush.getInstance().init(
 Please note that the order of the modules in the list will be taken into account when electing the push service to be used on a device: if both services are available and working then the Catapush SDK will pick the first in the list.
 
 <br/><br/>
+
+## Migration from Catapush 12.1.x
+
+You won't need to update your previous Catapush 12.1.x integration in order to use Catapush 13.0.x. You simply need to set the Catapush SDK dependencies to the latest 13.0.x version in your app's `build.gradle` script.
+
+However, before proceeding, make sure to set your app's target SDK version to 33 in your app's `build.gradle` script.
+
+Next, update your app's UI/UX to request the new `android.permission.POST_NOTIFICATIONS` permission on devices running Android 13+. This permission is required for the Catapush SDK to display received messages in the device's status bar. For more details, refer to the official [Notification runtime permission](https://developer.android.com/develop/ui/views/notifications/notification-permission) documentation.
 
 ## Migration from Catapush 12.0.x
 
