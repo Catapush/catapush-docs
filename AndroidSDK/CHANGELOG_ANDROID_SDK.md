@@ -8,6 +8,15 @@ Catapush 13.0.x is designed for Android 13.0 (API 33) and requires a minimum of 
 
 This release includes compatibility updates for the latest Android version and updates its third-party dependencies.
 
+#### 13.0.3 (11/09/2023)
+- Fix transitive test dependencies leaking to the core module Maven POM file
+
+#### 13.0.2 (11/09/2023)
+- Updates internal dependecies
+
+#### 13.0.1 (05/09/2023)
+- Adds the `Catapush.deleteMessagesInChannel` method to delete all messages in a specific channel
+
 #### 13.0.0 (14/06/2023)
 - Andorid 13 compatibility
 
