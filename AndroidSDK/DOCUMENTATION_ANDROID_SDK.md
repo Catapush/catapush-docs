@@ -185,6 +185,16 @@ The `onDisconnect(int errorCode, Context context)` callback might be executed wi
 
 </tr>
 
+<tr>
+
+<td>10 = START_TIMEOUT</td>
+
+<td>The SDK couldn't complete the start command in a timely fashion, might be caused by connectivity issues.</td>
+
+<td>Please check your internet connection and try to reconnect again in a few minutes.</td>
+
+</tr>
+
 </tbody>
 
 </table>
