@@ -8,6 +8,9 @@ Catapush 13.0.x is designed for Android 13.0 (API 33) and requires a minimum of 
 
 This release includes compatibility updates for the latest Android version and updates its third-party dependencies.
 
+#### 13.0.5 (15/11/2023)
+- Fix session delete API implementation
+
 #### 13.0.4 (18/10/2023)
 - Introduces error code `10 = START_TIMEOUT`. This code will be received in the `onDisconnected(…)` callback when the SDK is unable to establish a connection within a reasonable timeframe following the invocation of the `Catapush.start(…)` method
 - Mitigates ANRs when the Catapush SDK is waken up in the background by a push notification
