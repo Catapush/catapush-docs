@@ -8,6 +8,20 @@ Catapush 13.0.x is designed for Android 13.0 (API 33) and requires a minimum of 
 
 This release includes compatibility updates for the latest Android version and updates its third-party dependencies.
 
+#### 13.0.9 (18/12/2023)
+- Improve exception handling when the DNS servers are unreachable
+
+#### 13.0.8 (15/12/2023)
+- Add immediate XMPP shutdown on SDK disposing
+
+#### 13.0.7 (07/12/2023)
+- Improve session logout implementation
+- Improve XMPP connection reset on user identifier change
+- Improve API retry strategy implementation
+
+#### 13.0.6 (06/12/2023)
+- Fine tune HTTP connection pool parameters to reduce the number of pending TCP connections
+
 #### 13.0.5 (15/11/2023)
 - Fix session delete API implementation
 

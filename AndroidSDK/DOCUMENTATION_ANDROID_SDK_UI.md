@@ -18,7 +18,7 @@ To use it, you have to include the UI module as a dependency.
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:ui:13.0.5')
+implementation('com.catapush.catapush-android-sdk:ui:13.0.9')
 ```
 
 Then you have to initialize the `CatapushUi` as soon as the `Catapush` instance is initialized:
