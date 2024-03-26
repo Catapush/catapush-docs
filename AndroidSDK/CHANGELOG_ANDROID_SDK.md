@@ -2,6 +2,16 @@
 
 # Catapush Android SDK Changelog
 
+## Catapush 14.0.x
+
+Catapush 14.0.x is designed for Android 14.0 (API 34) and requires a minimum of Android 5.0 (API 21).
+
+This release includes compatibility updates for the latest Android version and updates its third-party dependencies.
+
+#### 14.0.0 (20/03/2024)
+- Andorid 14 compatibility
+- See the [migration guide](https://github.com/Catapush/catapush-docs/blob/master/AndroidSDK/DOCUMENTATION_ANDROID_SDK.md#migration-from-catapush-130x) to upgrade your integration
+
 ## Catapush 13.0.x
 
 Catapush 13.0.x is designed for Android 13.0 (API 33) and requires a minimum of Android 5.0 (API 21).

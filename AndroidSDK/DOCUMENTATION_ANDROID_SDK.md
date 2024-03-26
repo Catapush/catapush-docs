@@ -4,7 +4,7 @@
 
 ## Index
 
-*   [Catapush 13.0.x](#catapush-130x)
+*   [Catapush 14.0.x](#catapush-140x)
 *   [Project prerequisites](#project-prerequisites)
 *   [Core module](#core-module)
     *   [Include the Core module as a dependency](#include-the-core-module-as-a-dependency)
@@ -28,6 +28,7 @@
     *   [OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService](#optional-integrate-catapush-hms-with-a-pre-existent-hmsmessageservice)
     *   [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)
     *   [Update your Catapush initialization to use the HMS module](#update-your-catapush-initialization-to-use-the-hms-module)
+*   [Migration from Catapush 13.0.x to 14.0.x](#migration-from-catapush-130x)
 *   [Migration from Catapush 12.1.x to 13.0.x](#migration-from-catapush-121x)
 *   [Migration from Catapush 12.0.x to 12.1.x](#migration-from-catapush-120x)
 *   [Migration from Catapush 11.2.x to 12.0.x](#migration-from-catapush-112x)
@@ -53,15 +54,15 @@
     *   [What are battery and bandwidth usages?](#what-are-battery-and-bandwidth-usages)
     *   [There is an example project available?](#there-is-an-example-project-available)
 
-## Catapush 13.0.x
+## Catapush 14.0.x
 
-Catapush 13.0.x targets Android 13.0 (API 33) and requires Android 5.0 (API 21).
+Catapush 14.0.x is designed for Android 14.0 (API 34) and requires a minimum of Android 5.0 (API 21).
 
 ## Project prerequisites
 
 Catapush Android SDK assumes that your Android project:
 
-1. Has target SDK version set to 33 ([Android 13.0](https://developer.android.com/studio/releases/platforms#12))
+1. Has target SDK version set to 34 ([Android 14.0](https://developer.android.com/studio/releases/platforms#12))
 2. Has minimum SDK version greater than or equal to 21 ([Android 5.0](https://developer.android.com/studio/releases/platforms#5.0))
 
 ### Core module
@@ -73,23 +74,23 @@ See the Catapush GMS module or the Catapush HMS module sections below to install
 
 #### Include the Core module as a dependency
 
-At the top of the `app/build.gradle` file, before the _android_ block, add the Jitpack repository to the _repositories_ section:
+At the top of the `app/build.gradle` file, before the _android_ block, add the Catapush repository to the _repositories_ section:
 
 ```groovy
 repositories {
-    maven { url "https://jitpack.io" }
+    maven { url "https://s3.eu-west-1.amazonaws.com/m2repository.catapush.com/" }
 }
 ```
 
 Then, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:core:13.0.9')
+implementation 'com.catapush.catapush-android-sdk:core:14.0.0'
 ```
 
 #### Update your app AndroidManifest.xml
 
-Set your Catapush app key declaring this meta-data inside the application node of your AndroidManifest.xml
+Set your Catapush app key declaring this meta-data inside the application node of your `AndroidManifest.xml`
 ```xml
 <meta-data
     android:name="com.catapush.library.APP_KEY"
@@ -409,7 +410,7 @@ public class MyApplication extends MultiDexApplication {
 
         Catapush.getInstance()
             .setNotificationIntent((catapushMessage, context) -> {
-                Log.d("MyApp", "Notification tapped: " + catapushMessage);
+                Log.d("MyApp", "Creating notification intent for message: " + catapushMessage);
                 // This is the Activity you want to open when a notification is tapped:
                 Intent intent = new Intent(context, MainActivity.class);
                 // This is a unique URI set to the Intent to avoid its recycling for different
@@ -425,7 +426,7 @@ public class MyApplication extends MultiDexApplication {
             .init(
                 this,
                 catapushEventDelegate,
-                Collections.emptyList(), // Push notification services modules will be configured here, leave empty for now
+                Collections.emptyList(), // TODO Push notification services modules will be configured here, leave empty for now
                 template,
                 null, // You can pass more templates here if you want to support multiple notification channels
                 new Callback() {
@@ -617,7 +618,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:gms:13.0.9')
+implementation('com.catapush.catapush-android-sdk:gms:14.0.0')
 ```
 
 #### Google Mobile Services Gradle plugin configuration
@@ -632,8 +633,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.2'
-        classpath 'com.google.gms:google-services:4.3.15'
+        classpath 'com.android.tools.build:gradle:8.3.1'
+        classpath 'com.google.gms:google-services:4.4.1'
     }
 }
 ```
@@ -707,7 +708,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms:13.0.9')
+implementation('com.catapush.catapush-android-sdk:hms:14.0.0')
 ```
 
 #### OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService
@@ -717,7 +718,7 @@ If you're already using Huawei Push Kit to deliver push notifications to your ap
 In your `app/build.gradle`, in the dependencies block, replace the `hms` module with the `hms-base` module:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms-base:13.0.9')
+implementation('com.catapush.catapush-android-sdk:hms-base:14.0.0')
 ```
 
 Then edit your `HmsMessageService` implementation to relay the push notifications and the refreshed push tokens:
@@ -755,8 +756,8 @@ buildscript {
         maven { url 'https://developer.huawei.com/repo/' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
-        classpath 'com.huawei.agconnect:agcp:1.8.0.300' 
+        classpath 'com.android.tools.build:gradle:8.3.1'
+        classpath 'com.huawei.agconnect:agcp:1.9.1.303' 
     }
 }
 ```
@@ -793,6 +794,24 @@ Catapush.getInstance().init(
 Please note that the order of the modules in the list will be taken into account when electing the push service to be used on a device: if both services are available and working then the Catapush SDK will pick the first in the list.
 
 <br/><br/>
+
+## Migration from Catapush 13.0.x
+
+You won't need to update your previous Catapush 13.0.x integration in order to use Catapush 14.0.x. You simply need to set the Catapush SDK dependencies to the latest 14.0.x version in your app's `build.gradle` script and add the new Catapush Maven repository to your repositories list:
+```groovy
+repositories {
+    maven { url "https://s3.eu-west-1.amazonaws.com/m2repository.catapush.com/" }
+}
+```
+
+If your project has no other dependencies hosted on JitPack's Maven repository you can also remove it by deleting the corrisponding declaration:
+```groovy
+repositories {
+    maven { url "https://jitpack.io" }
+}
+```
+
+Finally make sure to set your app's target SDK version to 34.
 
 ## Migration from Catapush 12.1.x
 
