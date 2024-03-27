@@ -1,6 +1,7 @@
 name: Send test email via AWS SES to developers on action update
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - '.github/workflows/on_action_update_send_test_email.yml'
