@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send email using AWS SES
-        uses: dsfx3d/action-aws-ses@v1
+        uses: CodeAtlas/action-aws-ses@v1.1.0
         with:
           to: ${{ vars.TEST_EMAIL_RECIPIENTS }}
           from: ${{ vars.NEW_ANDROID_RELEASE_EMAIL_TO }}
