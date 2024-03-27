@@ -5,8 +5,8 @@ on:
     paths:
       - 'AndroidSDK/CHANGELOG_ANDROID_SDK.md'
 env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_ACCESS_KEY_ID: '${{ secrets.AWS_ACCESS_KEY_ID }}'
+  AWS_SECRET_ACCESS_KEY: '${{ secrets.AWS_SECRET_ACCESS_KEY }}'
   AWS_DEFAULT_REGION: 'eu-west-1'
 
 jobs:
@@ -16,8 +16,8 @@ jobs:
       - name: Send email using AWS SES
         uses: CodeAtlas/action-aws-ses@v1.1.0
         with:
-          to: ${{ vars.NEW_ANDROID_RELEASE_EMAIL_TO }}
-          from: ${{ vars.NEW_ANDROID_RELEASE_EMAIL_TO }}
-          reply_to: ${{ vars.NEW_ANDROID_RELEASE_EMAIL_REPLY_TO }}
-          subject: ${{ vars.NEW_ANDROID_RELEASE_EMAIL_SUBJECT }}
-          body_html: ${{ vars.NEW_ANDROID_RELEASE_EMAIL_BODY }}
+          to: '${{ vars.NEW_ANDROID_RELEASE_EMAIL_TO }}'
+          from: '${{ vars.NEW_ANDROID_RELEASE_EMAIL_TO }}'
+          reply_to: '${{ vars.NEW_ANDROID_RELEASE_EMAIL_REPLY_TO }}'
+          subject: '${{ vars.NEW_ANDROID_RELEASE_EMAIL_SUBJECT }}'
+          body_html: '${{ vars.NEW_ANDROID_RELEASE_EMAIL_BODY }}'
