@@ -35,6 +35,7 @@
 *   [Migration from Catapush 11.1.x to 11.2.x](#migration-from-catapush-111x)
 *   [Migration from Catapush 10.2.x to 11.1.x](#migration-from-catapush-102x)
 *   [Advanced](#advanced)
+    *   [Loggging](#logging)
     *   [Handling client-side push services errors](#handling-client-side-push-services-errors)
     *   [Notification visualization](#notification-visualization)
     *   [Disable received messages visualization](#disable-received-messages-visualization)
@@ -1010,6 +1011,22 @@ private void handleCatapushMessageIntent(Intent intent) {
 This change became necessary since the latest Android versions might delay `PendingIntent`s that target `BroadcastReceiver`s (like your implementation of the `CatapushReceiver` class) but won't delay a `PendingIntent` targeting an `Activity`.
 
 ## Advanced
+
+### Logging
+
+To enable the Catapush SDK logging to the console:
+
+```java
+Catapush.getInstance().enableLog()
+```
+
+To disable it:
+
+```java
+Catapush.getInstance().disableLog()
+```
+
+Please note that the logs will only be visible when you build your application in debug mode.
 
 ### Handling client-side push services errors
 
