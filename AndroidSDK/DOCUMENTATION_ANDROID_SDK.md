@@ -44,7 +44,10 @@
     *   [Sending Read Notification Receipt Manually](#sending-read-notification-receipt-manually)
     *   [Catapush conversation channels feature](#catapush-conversation-channels-feature)
     *   [Load and display messages attachment](#load-and-display-messages-attachment)
-    *   [Enabling optimal QoS for Silent Push notifications by ignoring Doze](#enabling-optimal-qos-for-silent-push-notifications-by-ignoring-doze)
+    *   [Optimal notifications delivery and Android 6.0+: Doze and App Standby](#optimal-notifications-delivery-and-android-60-doze-and-app-standby)
+    *   [Optimal notifications delivery and Android 7.0+: Background data restrictions](#optimal-notifications-delivery-and-android-70-background-data-restrictions)
+    *   [Optimal notifications delivery and Android 9.0+: Background execution restrictions](#optimal-notifications-delivery-and-android-90-background-execution-restrictions)
+    *   [Optimal notifications delivery and Android 9.0+: App Standby Buckets](#optimal-notifications-delivery-and-android-90-app-standby-buckets)
 *   [Advanced UI](#advanced-ui)
 *   [FAQ](#faq)
     *   [How does the library choose between GMS and HMS?](#how-does-the-library-choose-between-gms-and-hms)
@@ -1214,36 +1217,82 @@ try {
 }
 ```
 
-### Enabling optimal QoS for Silent Push notifications by ignoring Doze
+### Optimal notifications delivery and Android 6.0+: Doze and App Standby
 
-With version 6.0, Android has introduced a new feature called Doze that, under certain circumstances, might limit your app execution or network access while running in the background thus reducing reliability of sending Silent Push to execute the app; this capability is important to guarantee high priority push and the ability to start the application when it is closed / inactive.
+With version 6.0, Android has introduced a new feature called Doze that, under certain circumstances, might limit your app execution or network access thus reducing reliability of sending background push notifications to your app.
 
-Doze restrictions have been improved and strengthened in each subsequent Android release, ending with the introduction of App Standby Buckets in Android 9.0. These features, when your app hasn't been used for a period of time, might hinder your ability to execute Capatush SDK / your application and thus the ability of Catapush of consistently delivering messages to it.
+When your app is considered "inactive" by the Android system you will receive a `SystemConfigurationException` with the `reasonCode` attribute set to the value 101 (`SystemConfigurationException.REASON_SYSCFG_APP_INACTIVE`) as a warning when you start the Catapush SDK.
+
+If your app hasn't been included in the battery optimizations' ignore list you will also receive a `SystemConfigurationException` with the `reasonCode` attribute set to the value 102 (`SystemConfigurationException.REASON_SYSCFG_BATTERY_OPTIMIZATIONS`).
 
 To check if your app is being considered inactive you can use this method:  
-[https://developer.android.com/reference/android/app/usage/UsageStatsManager.html#isAppInactive(java.lang.String)](https://developer.android.com/reference/android/app/usage/UsageStatsManager.html#isAppInactive(java.lang.String))  
+[UsageStatsManager.isAppInactive(String)](https://developer.android.com/reference/android/app/usage/UsageStatsManager.html#isAppInactive(java.lang.String))  
 Its javadoc gives a brief description on how the system decides which app is inactive: 
 >Returns whether the specified app is currently considered inactive. This will be true if the app hasn't been used directly or indirectly for a period of time defined by the system. This could be of the order of several hours or days.
 
 To check if your app has been classified in a low priority Standby Bucket you can use this method:  
-[https://developer.android.com/reference/android/app/usage/UsageStatsManager.html#getAppStandbyBucket()](https://developer.android.com/reference/android/app/usage/UsageStatsManager.html#getAppStandbyBucket())  
+[UsageStatsManager.getAppStandbyBucket()](https://developer.android.com/reference/android/app/usage/UsageStatsManager.html#getAppStandbyBucket())  
 From its javadoc:
 >Returns the current standby bucket of the calling app. The system determines the standby state of the app based on app usage patterns. Standby buckets determine how much an app will be restricted from running background tasks such as jobs and alarms. Restrictions increase progressively from STANDBY_BUCKET_ACTIVE to STANDBY_BUCKET_RARE, with STANDBY_BUCKET_ACTIVE being the least restrictive. The battery level of the device might also affect the restrictions. Apps in buckets ≤ STANDBY_BUCKET_ACTIVE have no standby restrictions imposed. Apps in buckets > STANDBY_BUCKET_FREQUENT may have network access restricted when running in the background. The standby state of an app can change at any time either due to a user interaction or a system interaction or some algorithm determining that the app can be restricted for a period of time before the user has a need for it.
 
 If you app is considered inactive or has been put in a Standby Bucket > STANDBY_BUCKET_FREQUENT you should ask your user to disable the battery optimizations for your app, especially if reliable delivery is critical for your business.
 
 You can check if the user has already disabled the battery optimizations for you app using this method:  
-[https://developer.android.com/reference/android/os/PowerManager.html#isIgnoringBatteryOptimizations(java.lang.String)](https://developer.android.com/reference/android/os/PowerManager.html#isIgnoringBatteryOptimizations(java.lang.String))
+[PowerManager.isIgnoringBatteryOptimizations(String)](https://developer.android.com/reference/android/os/PowerManager.html#isIgnoringBatteryOptimizations(java.lang.String))
 
 Then, if it's not yet ignoring the optimizations, you can open the device settings on the correct page broadcasting an Intent with the following action:  
-
-[https://developer.android.com/reference/android/provider/Settings.html#ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS](https://developer.android.com/reference/android/provider/Settings.html#ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)  
+[Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS](https://developer.android.com/reference/android/provider/Settings.html#ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
 
 This list will be displayed:  
 
 ![](images/battery_optimization.png)  
 
 The user will have to find and tap your app, then choose "Don't optimize".
+
+### Optimal notifications delivery and Android 7.0+: Background data restrictions
+
+With version 7.0, Android has improved Doze by adding background data restrictions.
+
+When background data restrictions are enabled for your app you will receive a `SystemConfigurationException` with the `reasonCode` attribute set to the value 103 (`SystemConfigurationException.REASON_SYSCFG_BACKGROUND_DATA_RESTRICTIONS`) as a warning when you start the Catapush SDK.
+
+To check if your app is subject to background data restrictions you can use this method:  
+[ConnectivityManager.getRestrictBackgroundStatus()](https://developer.android.com/reference/android/net/ConnectivityManager#getRestrictBackgroundStatus())  
+From its javadoc:
+>Determines if the calling application is subject to metered network restrictions while running on background.
+
+Then, if the app is restricted, you can open the device settings on the correct page broadcasting an Intent with the following action:  
+[Settings.ACTION_IGNORE_BACKGROUND_DATA_RESTRICTIONS_SETTINGS](https://developer.android.com/reference/android/provider/Settings#ACTION_IGNORE_BACKGROUND_DATA_RESTRICTIONS_SETTINGS)
+
+### Optimal notifications delivery and Android 9.0+: Background execution restrictions
+
+With version 9.0, Android has improved Doze by adding background execution restrictions and App Standby Buckets.
+
+When background execution restrictions are enabled for your app you will receive a `SystemConfigurationException` with the `reasonCode` attribute set to the value 104 (`SystemConfigurationException.REASON_SYSCFG_BACKGROUND_EXECUTION_RESTRICTIONS`) as a warning when you start the Catapush SDK.
+
+To check if your app is subject to background execution restrictions you can use this method:  
+[ActivityManager.isBackgroundRestricted()](https://developer.android.com/reference/android/app/ActivityManager#isBackgroundRestricted())  
+From its javadoc:
+>Query whether the user has enabled background restrictions for this app.
+The user may chose to do this, if they see that an app is consuming an unreasonable amount of battery while in the background.
+If true, any work that the app tries to do will be aggressively restricted while it is in the background. At a minimum, jobs and alarms will not execute and foreground services cannot be started unless an app activity is in the foreground.
+
+Then, if the app is restricted, you should inform your user and ask for disabling the restrictions in the device settings.
+
+### Optimal notifications delivery and Android 9.0+: App Standby Buckets
+
+With version 9.0, Android has introduced App Standby Buckets to help the system prioritize apps' requests for resources based on how recently and how frequently the apps are used. Based on app usage patterns, each app is placed in one of five priority buckets. The system limits the device resources available to each app based on which bucket the app is in.
+
+When your app gets demoted to a Standby Bucket less frequent then `UsageStatsManager.STANDBY_BUCKET_FREQUENT` it may have network access limited.
+
+In this case, you will receive a `SystemConfigurationException` with the `reasonCode` attribute set to the value 105 (`SystemConfigurationException.REASON_SYSCFG_STANDBY_BUCKET_RESTRICTED`) as a warning when you start the Catapush SDK.
+
+To check in which bucket your app is currently categorized you can use this method:  
+[UsageStatsManager.getAppStandbyBucket()](https://developer.android.com/reference/android/app/usage/UsageStatsManager#getAppStandbyBucket())  
+From its javadoc:
+>Returns the current standby bucket of the calling app. The system determines the standby state of the app based on app usage patterns. Standby buckets determine how much an app will be restricted from running background tasks such as jobs and alarms.
+
+Then, if the bucket's priority is too low, you can request to ignore the battery optimizations opening the device settings on the correct page broadcasting an Intent with the following action:
+[Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS](https://developer.android.com/reference/android/provider/Settings.html#ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
 
 <br/><br/>
 
