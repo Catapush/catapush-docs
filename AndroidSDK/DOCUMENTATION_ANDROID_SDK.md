@@ -28,6 +28,7 @@
     *   [OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService](#optional-integrate-catapush-hms-with-a-pre-existent-hmsmessageservice)
     *   [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)
     *   [Update your Catapush initialization to use the HMS module](#update-your-catapush-initialization-to-use-the-hms-module)
+*   [Migration from Catapush 14.0.x to 15.0.x](#migration-from-catapush-140x)
 *   [Migration from Catapush 13.0.x to 14.0.x](#migration-from-catapush-130x)
 *   [Migration from Catapush 12.1.x to 13.0.x](#migration-from-catapush-121x)
 *   [Migration from Catapush 12.0.x to 12.1.x](#migration-from-catapush-120x)
@@ -799,6 +800,14 @@ Please note that the order of the modules in the list will be taken into account
 
 <br/><br/>
 
+## Migration from Catapush 14.0.x
+
+Unless you were using the "modal notifications" feature of the Catapush SDK you won't need to update your previous Catapush 14.0.x integration in order to use Catapush 15.0.x. You simply need to set the Catapush SDK dependencies to the latest 15.0.x version in your app's `build.gradle` script.
+
+If you were using the "modal notifications" feature of the Catapush SDK then replace its usages with the Android's [Bubbles API](https://developer.android.com/develop/ui/views/notifications/bubbles).
+
+Finally make sure to set your app's target SDK version to 35.
+
 ## Migration from Catapush 13.0.x
 
 You won't need to update your previous Catapush 13.0.x integration in order to use Catapush 14.0.x. You simply need to set the Catapush SDK dependencies to the latest 14.0.x version in your app's `build.gradle` script and add the new Catapush Maven repository to your repositories list:
@@ -1262,6 +1271,36 @@ From its javadoc:
 
 Then, if the app is restricted, you can open the device settings on the correct page broadcasting an Intent with the following action:  
 [Settings.ACTION_IGNORE_BACKGROUND_DATA_RESTRICTIONS_SETTINGS](https://developer.android.com/reference/android/provider/Settings#ACTION_IGNORE_BACKGROUND_DATA_RESTRICTIONS_SETTINGS)
+
+As an example, see this code snippet:
+```kotlin
+Catapush
+    .setUser("username", "password")
+    .start(object : RecoverableErrorCallback<Boolean> {
+        override fun success(response: Boolean) {
+            // Catapush started
+        }
+
+        override fun failure(irrecoverableError: Throwable) {
+            // Catapush failed to start
+        }
+
+        override fun warning(recoverableError: Throwable) {
+            Timber.w(recoverableError)
+
+            if (recoverableError is SystemConfigurationException
+                && recoverableError.reasonCode == REASON_SYSCFG_BACKGROUND_DATA_RESTRICTIONS) {
+                // TODO: Inform the user about the restrictions and ask to fix them in the settings.
+                // If the user wants to proceed launch this Intent:
+                Intent(Settings.ACTION_IGNORE_BACKGROUND_DATA_RESTRICTIONS_SETTINGS).also {
+                    it.data = Uri.fromParts("package", packageName, null)
+                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(it)
+                }
+            }
+        }
+    })
+```
 
 ### Optimal notifications delivery and Android 9.0+: Background execution restrictions
 
