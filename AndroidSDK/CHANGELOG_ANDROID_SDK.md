@@ -2,6 +2,23 @@
 
 # Catapush Android SDK Changelog
 
+## Catapush 15.0.x
+
+Catapush 15.0.x is designed for Android 15.0 (API 35) and requires a minimum of Android 5.0 (API 21).
+
+This relese removes the "modal notifications" feature: if you were using it, migrate your app to Android's [Bubbles API](https://developer.android.com/develop/ui/views/notifications/bubbles).
+
+See the [migration guide](https://github.com/Catapush/catapush-docs/blob/master/AndroidSDK/DOCUMENTATION_ANDROID_SDK.md#migration-from-catapush-140x) to upgrade your integration.
+
+#### 15.0.0 (17/01/2025)
+- Compatibility with Android 15 (API 35)
+- Updated Kotlin to version 1.9.25
+- Updated AndroidX Core to 1.15.0
+- Updated Dagger to version 2.55
+- Updated Firebase Messaging to version 24.1.0
+- Updated HMS Push Kit to version 6.13.0.300
+- Removed the "modal notifications" feature
+
 ## Catapush 14.0.x
 
 Catapush 14.0.x is designed for Android 14.0 (API 34) and requires a minimum of Android 5.0 (API 21).
@@ -9,7 +26,7 @@ Catapush 14.0.x is designed for Android 14.0 (API 34) and requires a minimum of 
 This release includes compatibility updates for the latest Android version and updates its third-party dependencies.
 
 #### 14.0.0 (20/03/2024)
-- Andorid 14 compatibility
+- Android 14 compatibility
 - See the [migration guide](https://github.com/Catapush/catapush-docs/blob/master/AndroidSDK/DOCUMENTATION_ANDROID_SDK.md#migration-from-catapush-130x) to upgrade your integration
 
 ## Catapush 13.0.x
@@ -49,7 +66,7 @@ This release includes compatibility updates for the latest Android version and u
 - Adds the `Catapush.deleteMessagesInChannel` method to delete all messages in a specific channel
 
 #### 13.0.0 (14/06/2023)
-- Andorid 13 compatibility
+- Android 13 compatibility
 
 ## Catapush 12.1.x
 
