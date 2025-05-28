@@ -4,7 +4,7 @@
 
 ## Index
 
-*   [Catapush 14.0.x](#catapush-140x)
+*   [Catapush 15.0.x](#catapush-150x)
 *   [Project prerequisites](#project-prerequisites)
 *   [Core module](#core-module)
     *   [Include the Core module as a dependency](#include-the-core-module-as-a-dependency)
@@ -58,15 +58,15 @@
     *   [What are battery and bandwidth usages?](#what-are-battery-and-bandwidth-usages)
     *   [There is an example project available?](#there-is-an-example-project-available)
 
-## Catapush 14.0.x
+## Catapush 15.0.x
 
-Catapush 14.0.x is designed for Android 14.0 (API 34) and requires a minimum of Android 5.0 (API 21).
+Catapush 15.0.x is designed for Android 15.0 (API 35) and requires a minimum of Android 5.0 (API 21).
 
 ## Project prerequisites
 
 Catapush Android SDK assumes that your Android project:
 
-1. Has target SDK version set to 34 ([Android 14.0](https://developer.android.com/studio/releases/platforms#12))
+1. Has target SDK version set to 35 ([Android 15.0](https://developer.android.com/tools/releases/platforms#15))
 2. Has minimum SDK version greater than or equal to 21 ([Android 5.0](https://developer.android.com/studio/releases/platforms#5.0))
 
 ### Core module
@@ -89,7 +89,7 @@ repositories {
 Then, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation 'com.catapush.catapush-android-sdk:core:14.0.0'
+implementation 'com.catapush.catapush-android-sdk:core:15.0.0'
 ```
 
 #### Update your app AndroidManifest.xml
@@ -622,7 +622,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:gms:14.0.0')
+implementation('com.catapush.catapush-android-sdk:gms:15.0.0')
 ```
 
 #### Google Mobile Services Gradle plugin configuration
@@ -712,7 +712,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms:14.0.0')
+implementation('com.catapush.catapush-android-sdk:hms:15.0.0')
 ```
 
 #### OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService
@@ -722,7 +722,7 @@ If you're already using Huawei Push Kit to deliver push notifications to your ap
 In your `app/build.gradle`, in the dependencies block, replace the `hms` module with the `hms-base` module:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms-base:14.0.0')
+implementation('com.catapush.catapush-android-sdk:hms-base:15.0.0')
 ```
 
 Then edit your `HmsMessageService` implementation to relay the push notifications and the refreshed push tokens:
