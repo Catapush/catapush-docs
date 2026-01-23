@@ -4,7 +4,7 @@
 
 ## Index
 
-*   [Catapush 15.0.x](#catapush-150x)
+*   [Catapush 16.0.x](#catapush-160x)
 *   [Project prerequisites](#project-prerequisites)
 *   [Core module](#core-module)
     *   [Include the Core module as a dependency](#include-the-core-module-as-a-dependency)
@@ -28,6 +28,7 @@
     *   [OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService](#optional-integrate-catapush-hms-with-a-pre-existent-hmsmessageservice)
     *   [Huawei Mobile Services Gradle plugin configuration](#huawei-mobile-services-gradle-plugin-configuration)
     *   [Update your Catapush initialization to use the HMS module](#update-your-catapush-initialization-to-use-the-hms-module)
+*   [Migration from Catapush 15.0.x to 16.0.x](#migration-from-catapush-150x)
 *   [Migration from Catapush 14.0.x to 15.0.x](#migration-from-catapush-140x)
 *   [Migration from Catapush 13.0.x to 14.0.x](#migration-from-catapush-130x)
 *   [Migration from Catapush 12.1.x to 13.0.x](#migration-from-catapush-121x)
@@ -58,16 +59,16 @@
     *   [What are battery and bandwidth usages?](#what-are-battery-and-bandwidth-usages)
     *   [There is an example project available?](#there-is-an-example-project-available)
 
-## Catapush 15.0.x
+## Catapush 16.0.x
 
-Catapush 15.0.x is designed for Android 15.0 (API 35) and requires a minimum of Android 5.0 (API 21).
+Catapush 16.0.x is designed for Android 16.0 (API 36) and requires a minimum of Android 6.0 (API 23).
 
 ## Project prerequisites
 
 Catapush Android SDK assumes that your Android project:
 
-1. Has target SDK version set to 35 ([Android 15.0](https://developer.android.com/tools/releases/platforms#15))
-2. Has minimum SDK version greater than or equal to 21 ([Android 5.0](https://developer.android.com/studio/releases/platforms#5.0))
+1. Has target SDK version set to 36 ([Android 16.0](https://developer.android.com/tools/releases/platforms#16))
+2. Has minimum SDK version greater than or equal to 23 ([Android 6.0](https://developer.android.com/tools/releases/platforms#6.0))
 
 ### Core module
 
@@ -89,7 +90,7 @@ repositories {
 Then, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation 'com.catapush.catapush-android-sdk:core:15.0.0'
+implementation 'com.catapush.catapush-android-sdk:core:16.0.0'
 ```
 
 #### Update your app AndroidManifest.xml
@@ -622,7 +623,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:gms:15.0.0')
+implementation('com.catapush.catapush-android-sdk:gms:16.0.0')
 ```
 
 #### Google Mobile Services Gradle plugin configuration
@@ -712,7 +713,7 @@ Once you have completed all the steps above proceed with this configuration:
 In your `app/build.gradle`, in the dependencies block, add a new implementation:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms:15.0.0')
+implementation('com.catapush.catapush-android-sdk:hms:16.0.0')
 ```
 
 #### OPTIONAL: integrate Catapush HMS with a pre-existent HmsMessageService
@@ -722,7 +723,7 @@ If you're already using Huawei Push Kit to deliver push notifications to your ap
 In your `app/build.gradle`, in the dependencies block, replace the `hms` module with the `hms-base` module:
 
 ```groovy
-implementation('com.catapush.catapush-android-sdk:hms-base:15.0.0')
+implementation('com.catapush.catapush-android-sdk:hms-base:16.0.0')
 ```
 
 Then edit your `HmsMessageService` implementation to relay the push notifications and the refreshed push tokens:
@@ -798,6 +799,12 @@ Catapush.getInstance().init(
 Please note that the order of the modules in the list will be taken into account when electing the push service to be used on a device: if both services are available and working then the Catapush SDK will pick the first in the list.
 
 <br/><br/>
+
+## Migration from Catapush 15.0.x
+
+You won't need to update your previous Catapush 15.0.x integration in order to use Catapush 16.0.x. You simply need to set the Catapush SDK dependencies to the latest 16.0.x version in your app's `build.gradle` script.
+
+Finally make sure to set your app's target SDK version to 36.
 
 ## Migration from Catapush 14.0.x
 

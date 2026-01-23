@@ -2,6 +2,20 @@
 
 # Catapush Android SDK Changelog
 
+## Catapush 16.0.x
+
+Catapush 16.0.x is designed for Android 16.0 (API 36) and requires a minimum of Android 6.0 (API 23).
+
+See the [migration guide](https://github.com/Catapush/catapush-docs/blob/master/AndroidSDK/DOCUMENTATION_ANDROID_SDK.md#migration-from-catapush-150x) to upgrade your integration.
+
+#### 16.0.0 (22/01/2026)
+- Compatibility with Android 16 (API 36)
+- Updated Kotlin to version 2.2.20
+- Updated AndroidX Core to 1.17.0
+- Updated Dagger to version 2.57.2
+- Updated Firebase Messaging to version 25.0.1
+- Updated HMS Push Kit to version 6.13.0.300
+
 ## Catapush 15.0.x
 
 Catapush 15.0.x is designed for Android 15.0 (API 35) and requires a minimum of Android 5.0 (API 21).
@@ -9,6 +23,9 @@ Catapush 15.0.x is designed for Android 15.0 (API 35) and requires a minimum of 
 This relese removes the "modal notifications" feature: if you were using it, migrate your app to Android's [Bubbles API](https://developer.android.com/develop/ui/views/notifications/bubbles).
 
 See the [migration guide](https://github.com/Catapush/catapush-docs/blob/master/AndroidSDK/DOCUMENTATION_ANDROID_SDK.md#migration-from-catapush-140x) to upgrade your integration.
+
+#### 15.0.1 (09/05/2025)
+- Minor fixes and improvements
 
 #### 15.0.0 (17/01/2025)
 - Compatibility with Android 15 (API 35)
