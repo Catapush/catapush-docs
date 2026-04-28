@@ -3,6 +3,8 @@ name: Send email via AWS SES to customers on Android changelog update
 on:
   workflow_dispatch:
   push:
+    branches:
+      - master
     paths:
       - 'AndroidSDK/CHANGELOG_ANDROID_SDK.md'
 
