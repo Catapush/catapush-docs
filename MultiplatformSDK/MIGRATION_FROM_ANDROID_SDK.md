@@ -2,7 +2,7 @@
 
 # Migrating from Catapush Android SDK 16.0.x to Catapush Multiplatform SDK 1.0.0
 
-The Catapush Multiplatform SDK is the successor to the previous `catapush-android-sdk` (and to the previous `catapush-ios-sdk-pod` on iOS). It is built with Kotlin Multiplatform so a single codebase powers both Android and iOS.
+The Catapush Multiplatform SDK is the successor to the previous `catapush-android-sdk` (and to the previous `catapush-ios-sdk-pod` on iOS). It exposes the same API surface on both platforms while remaining idiomatic Kotlin/Java on Android.
 
 This guide covers the migration **from version 16.0.x of the previous Android SDK** to version 1.0.0 of the Multiplatform SDK. The conceptual model is unchanged — the same `Catapush` singleton, the same `ICatapushEventDelegate`, the same `NotificationTemplate`, the same GMS/HMS modules — but the artifact coordinates and a handful of method signatures have changed and require source-code updates. There is **no Maven artifact relocation**, so simply bumping the version is not enough.
 
@@ -31,7 +31,7 @@ The migration consists of one build-time change (artifact coordinates) and a sma
 | `Catapush` access | `Catapush.getInstance().…` → `Catapush.…` (Kotlin singleton object) |
 | Credentials method | `setUser(id, pwd)` → `setCredentials(id, pwd)` |
 | `init(…)` signature | drops the `ICatapushInitializer` and the trailing `Callback<Boolean>` parameters; init is now synchronous. The `ICatapushInitializer` is registered via the new `Catapush.setInitializer(…)` method when needed |
-| Message queries | callback-based / RxJava `Flowable` queries are replaced by `kotlinx.coroutines` `Flow`s. `getMessagesWithoutChannelAsList(…)` / `getMessagesFromChannelAsList(…)` / `getMessagesWithoutChannelAsPagingDataFlowable(…)` / `getMessagesFromChannelAsPagingDataFlowable(…)` → unified `getMessages(scope, pageSize, channel)` returning `Flow<PagingData<CatapushMessage>>` |
+| Message queries | callback-based and `Flowable`-returning queries are replaced by `kotlinx.coroutines` `Flow`s. `getMessagesWithoutChannelAsList(…)` / `getMessagesFromChannelAsList(…)` / `getMessagesWithoutChannelAsPagingDataFlowable(…)` / `getMessagesFromChannelAsPagingDataFlowable(…)` → unified `getMessages(scope, pageSize, channel)` returning `Flow<PagingData<CatapushMessage>>` |
 | Counts and channel list | callback-based `getChannelList(callback)`, `countMessages(callback)`, `countUnreadMessages(callback)` → `Flow`-returning equivalents (`getChannelList()`, `countMessages()`, `countUnreadMessages(channel?)`) |
 | Send and attachments | the dedicated `sendFile(…)` overloads are removed; attachments are now passed via the `attachmentUri` parameter of `sendMessage(…)` |
 | Wakeup data key | `Catapush.KEY_CATAPUSH_WAKEUP` → `ICatapush.KEY_CATAPUSH_WAKEUP` (relevant only if you have a custom `FirebaseMessagingService` or `HmsMessageService` that forwards wakeups to Catapush) |
@@ -107,7 +107,7 @@ dependencies {
 
 Notes on artifact naming:
 
-* The pure KMP modules (`core`, `ui`) live under the **`com.catapush.sdk`** group.
+* The cross-platform modules (`core`, `ui`) live under the **`com.catapush.sdk`** group.
 * Android-only platform modules (`gms`, `hms`, `hms-base`) live under **`com.catapush.sdk.android`**.
 * The HMS module split is the same as in 16.0.x, just under the new group. Pick **`:hms`** when you do not have a `HmsMessageService` of your own (the SDK ships its own implementation), or **`:hms-base`** when you keep your existing `HmsMessageService` and forward push wakeups via `CatapushHms.handleHmsWakeup(…)` and `CatapushHms.handleHmsNewToken(…)`. The HMS Push Kit only allows one messaging service per app, which is why the split exists.
 
@@ -211,7 +211,7 @@ The `Catapush.isRunning()` / `Catapush.isConnected()` distinction introduced in 
 
 ## 6. Update message queries to the Flow-based API
 
-In 16.0.x the same data was reachable via two parallel sets of methods: the callback-based `…AsList(callback)` family and the RxJava 3 `…AsPagingDataFlowable(scope)` family. Both have been collapsed into a single `kotlinx.coroutines` `Flow`-based API in 1.0.0:
+In 16.0.x the same data was reachable via two parallel sets of methods: the callback-based `…AsList(callback)` family and the `…AsPagingDataFlowable(scope)` family that returned RxJava 3 `Flowable`s. Both have been collapsed into a single `kotlinx.coroutines` `Flow`-based API in 1.0.0:
 
 * `getMessagesWithoutChannelAsList(…)` and `getMessagesFromChannelAsList(…)` (and their `…AsPagingDataFlowable(…)` siblings) → `getMessages(scope, pageSize, channel)` returning `Flow<PagingData<CatapushMessage>>`.
 * `getChannelList(callback)` → `getChannelList(): Flow<List<String>>`.

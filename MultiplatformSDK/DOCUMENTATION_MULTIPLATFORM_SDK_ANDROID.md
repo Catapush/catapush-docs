@@ -49,7 +49,7 @@
 
 ## Catapush Multiplatform SDK 1.0.0
 
-The Catapush Multiplatform SDK is built with Kotlin Multiplatform: a single shared codebase compiles to native binaries for Android and iOS. On Android the SDK is shipped as a regular set of `aar` artifacts hosted on the public Catapush Maven repository.
+On Android the SDK is shipped as a regular set of `aar` artifacts hosted on the public Catapush Maven repository.
 
 This release targets Android 16 (API 36) and requires a minimum of Android 7.0 (API 24).
 
@@ -838,24 +838,29 @@ Install a `CatapushMessageTransformation` to intercept every incoming message be
 
 ```kotlin
 Catapush.setMessageTransformation(object : CatapushMessageTransformation() {
-    override fun transform(model: Model): Model {
-        val original = model.message
+    override fun transform(input: Model): Model {
+        // input.originalMessage is the read-only original message;
+        // input.body and input.previewText are the mutable values that will be persisted.
 
         // Example 1 — end-to-end decryption: the server delivers an envelope and the client
         // unwraps it with a key that never leaves the device.
-        val decryptedBody = MyCrypto.decrypt(original.body, MyKeystore.userKey)
+        val decryptedBody = MyCrypto.decrypt(input.body, MyKeystore.userKey)
 
         // Example 2 — placeholder substitution: replace tokens with values from local state.
-        val finalBody = decryptedBody
+        input.body = decryptedBody
             .replace("{{firstName}}", LocalProfile.firstName)
             .replace("{{orderId}}", LocalCart.currentOrderId.orEmpty())
 
-        // Return a new Model with the rewritten body. Keep id, sender, recipient and timestamps
-        // untouched so message identity and ordering are preserved.
-        return Model(original.copy(body = finalBody))
+        // Optionally update the preview shown in the messages list.
+        input.previewText = input.body.take(80)
+
+        // Return the same instance with the values you want to persist.
+        return input
     }
 })
 ```
+
+Modify `input.body` and `input.previewText` in place — the SDK persists the values present on the returned `Model`. Other fields (id, sender, recipient, timestamps) are read-only via `input.originalMessage`.
 
 The transformation runs synchronously on the SDK's IO scheduler. Keep it fast — long-running work blocks message persistence.
 
@@ -939,7 +944,7 @@ No. All Catapush modules ship a `consumer-rules.pro` file that is merged into yo
 
 ### Does the SDK use RxJava?
 
-The SDK uses [Reaktive](https://github.com/badoo/Reaktive) internally for KMP-compatible reactive streams. Reaktive is a private dependency of the SDK and is **not** exposed on the public API; your app does not need to depend on RxJava or Reaktive. The public API uses `kotlinx.coroutines.Flow` for streams and plain `Callback` interfaces for one-shot operations.
+No. The public API uses `kotlinx.coroutines.Flow` for streams and plain `Callback` interfaces for one-shot operations. Your app does not need to depend on RxJava.
 
 ### Is there an example project available?
 

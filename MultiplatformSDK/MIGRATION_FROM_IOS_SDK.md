@@ -2,7 +2,7 @@
 
 # Migrating from `catapush-ios-sdk-pod` to Catapush Multiplatform SDK 1.0.0
 
-The Catapush Multiplatform SDK is the successor to the previous `catapush-ios-sdk-pod` (and to the previous `catapush-android-sdk` on Android). It is built with Kotlin Multiplatform and shipped to iOS apps as a pre-built **XCFramework**, distributed via Swift Package Manager.
+The Catapush Multiplatform SDK is the successor to the previous `catapush-ios-sdk-pod` (and to the previous `catapush-android-sdk` on Android). On iOS it is shipped as a pre-built **XCFramework**, distributed via Swift Package Manager.
 
 This guide covers the migration from the previous CocoaPods-based iOS SDK. The migration on iOS is more involved than its Android counterpart because the API surface has been modernized for Swift-first usage: the `Catapush` static methods, the dual `CatapushDelegate` / `MessagesDispatchDelegate` protocols, the `MessageIP` CoreData entity and the `CatapushNotificationServiceExtension` subclass have all been replaced. The functional model — connect, exchange messages with attachments, receive APNs wakeups, render via a Notification Service Extension, share state with the extension via an App Group — is unchanged.
 
@@ -27,7 +27,7 @@ This guide covers the migration from the previous CocoaPods-based iOS SDK. The m
 | Language idiom | Objective-C-first static methods → Swift-first singleton (`Catapush.shared.*`) |
 | App key configuration | `[Catapush setAppKey:@"…"]` (code) → `Info.plist` key `CatapushAppKey` |
 | Credentials | `[Catapush setIdentifier:@"…" andPassword:@"…"]` → `Catapush.shared.setCredentials(identifier:password:)` |
-| Initialization | `setupCatapushStateDelegate:andMessagesDispatcherDelegate:` + `registerUserNotification:` → `Catapush.shared.doInit(eventDelegate:mobileServices:)` (Kotlin's `init` is exposed to Swift as `doInit` to avoid clashing with Swift's `init`) |
+| Initialization | `setupCatapushStateDelegate:andMessagesDispatcherDelegate:` + `registerUserNotification:` → `Catapush.shared.doInit(eventDelegate:mobileServices:)` (the method is named `doInit` on Swift to avoid clashing with Swift's `init` keyword) |
 | Start | `[Catapush start:&error]` (NSError out-param) → `Catapush.shared.start(callback:)` (`RecoverableErrorCallback` with `success` / `warning` / `failure`) |
 | Lifecycle hooks | `applicationDidEnterBackground:` / `applicationDidBecomeActive:` / `applicationWillEnterForeground:withError:` / `applicationWillTerminate:` were forwarded to `Catapush` manually — these are no longer required: the SDK handles foreground/background transitions internally |
 | Delegates | `CatapushDelegate` + `MessagesDispatchDelegate` → unified `ICatapushEventDelegate` (mirrors the Android event callbacks) |
@@ -45,7 +45,7 @@ The rest of this guide walks through each step.
 
 ## 1. Replace CocoaPods with Swift Package Manager
 
-Remove the legacy pod from your `Podfile`:
+Remove the previous pod from your `Podfile`:
 
 ```ruby
 # Remove this line:
@@ -72,7 +72,7 @@ dependencies: [
 ]
 ```
 
-The previous "manual library integration when using `use_frameworks!`" workaround documented in the legacy README is no longer needed — SPM handles framework-style linkage natively.
+The previous "manual library integration when using `use_frameworks!`" workaround documented in the previous README is no longer needed — SPM handles framework-style linkage natively.
 
 ## 2. Move the app key to `Info.plist`
 
@@ -95,9 +95,9 @@ The **App Group** configuration is unchanged — you still need to enable the sa
 
 ## 3. Update the AppDelegate
 
-The legacy AppDelegate had four lifecycle methods and two delegate protocols to wire up. The new pattern is a single `doInit(…)` call followed by `setCredentials(…)` and `start(…)`. The four `application…:` lifecycle forwards are no longer needed.
+The previous AppDelegate had four lifecycle methods and two delegate protocols to wire up. The new pattern is a single `doInit(…)` call followed by `setCredentials(…)` and `start(…)`. The four `application…:` lifecycle forwards are no longer needed.
 
-**Before** (Objective-C, legacy pod):
+**Before** (Objective-C, previous pod):
 
 ```objc
 @interface AppDelegate () <CatapushDelegate, MessagesDispatchDelegate, UNUserNotificationCenterDelegate>
@@ -201,7 +201,7 @@ Notes:
 
 ## 4. Adopt `ICatapushEventDelegate`
 
-The legacy `CatapushDelegate` (connection state) and `MessagesDispatchDelegate` (incoming/outgoing messages) protocols are unified into a single `ICatapushEventDelegate` protocol that mirrors the one used on Android. The callback names follow the Android conventions (`onConnected`, `onMessageReceived`, …).
+The previous `CatapushDelegate` (connection state) and `MessagesDispatchDelegate` (incoming/outgoing messages) protocols are unified into a single `ICatapushEventDelegate` protocol that mirrors the one used on Android. The callback names follow the Android conventions (`onConnected`, `onMessageReceived`, …).
 
 ```swift
 import CatapushSdk
@@ -222,14 +222,14 @@ class MyCatapushEventDelegate: ICatapushEventDelegate {
 }
 ```
 
-Mapping from the legacy protocols:
+Mapping from the previous protocols:
 
 | Legacy (Obj-C) | Multiplatform 1.0.0 (Swift) |
 |---|---|
 | `catapushDidConnectSuccessfully:` | `onConnected()` |
 | `catapush:didFailOperation:withError:` (with `WRONG_AUTHENTICATION`) | `onRegistrationFailed(error:)` |
 | `catapush:didFailOperation:withError:` (with connection errors) | `onDisconnected(error:)` |
-| (no equivalent) | `onConnecting()` |
+| (not exposed as a delegate callback in the previous pod) | `onConnecting()` |
 | `libraryDidReceiveMessageIP:` | `onMessageReceived(message:)` (and `onMessageReceivedConfirmed(message:)` after the server ack) |
 | `libraryDidSendMessage:` | `onMessageSent(message:)` (and `onMessageSentConfirmed(message:)` after the server ack) |
 | `libraryDidFailToSendMessage:` | the failure surfaces through the `Callback<Boolean>` passed to `sendMessage(…)` |
@@ -238,11 +238,11 @@ The `RecoverableErrorCallback` and `Callback` protocols passed to `start(…)` a
 
 ## 5. Replace the Notification Service Extension
 
-The legacy SDK exposed a base class `CatapushNotificationServiceExtension` that you subclassed and overrode `handleMessage:` / `handleError:`. The new SDK does **not** ship a base extension class; instead, you implement a vanilla `UNNotificationServiceExtension`, initialize the SDK inside it, and observe the next incoming message via `Catapush.shared.observeNextMessage(timeoutSeconds:onMessage:onTimeout:)`.
+The previous SDK exposed a base class `CatapushNotificationServiceExtension` that you subclassed and overrode `handleMessage:` / `handleError:`. The new SDK does **not** ship a base extension class; instead, you implement a vanilla `UNNotificationServiceExtension`, initialize the SDK inside it, and observe the next incoming message via `Catapush.shared.observeNextMessage(timeoutSeconds:onMessage:onTimeout:)`.
 
 The deployment-target rule still applies: **the extension target's deployment target must match the main app's deployment target**, and both must enable the same App Group.
 
-**Before** (legacy pod, Obj-C):
+**Before** (previous pod, Obj-C):
 
 ```objc
 @interface NotificationService : CatapushNotificationServiceExtension
@@ -340,11 +340,11 @@ class NotificationService: UNNotificationServiceExtension {
 }
 ```
 
-The legacy error-code branch (`CatapushCredentialsError`, `CatapushNetworkError`, `CatapushNoMessagesError`, `CatapushFileProtectionError`, `CatapushConflictErrorCode`, `CatapushAppIsActive`) is no longer surfaced in the extension. The new pattern reduces it to a single timeout fallback inside `observeNextMessage(…)`. If you previously rendered different fallback bodies depending on the error code, replace them with a single localized "No new message" string in the `onTimeout` branch.
+The previous error-code branch (`CatapushCredentialsError`, `CatapushNetworkError`, `CatapushNoMessagesError`, `CatapushFileProtectionError`, `CatapushConflictErrorCode`, `CatapushAppIsActive`) is no longer surfaced in the extension. The new pattern reduces it to a single timeout fallback inside `observeNextMessage(…)`. If you previously rendered different fallback bodies depending on the error code, replace them with a single localized "No new message" string in the `onTimeout` branch.
 
 ## 6. Update message send and receive code
 
-The 11 legacy `sendMessageWithText:…` overloads collapse into a single function:
+The 11 previous `sendMessageWithText:…` overloads collapse into a single function:
 
 ```swift
 Catapush.shared.sendMessage(
@@ -365,13 +365,13 @@ Marking a message as read changes class:
 |---|---|
 | `[MessageIP sendMessageReadNotification:msg]` | `Catapush.shared.notifyMessageOpened(messageId: msg.id)` |
 
-The legacy `MessageIP` properties (`body`, `sentTime`, `status`, `originalMessageId`, …) map onto `CatapushMessage` properties with mostly the same names. The `MESSAGEIP_STATUS` enum (`MessageIP_NOT_READ`, `MessageIP_READ`, `MessageIP_SENT`, `MessageIP_ERROR`, …) is replaced by `MessageState` on `CatapushMessage`.
+The previous `MessageIP` properties (`body`, `sentTime`, `status`, `originalMessageId`, …) map onto `CatapushMessage` properties with mostly the same names. The `MESSAGEIP_STATUS` enum (`MessageIP_NOT_READ`, `MessageIP_READ`, `MessageIP_SENT`, `MessageIP_ERROR`, …) is replaced by `MessageState` on `CatapushMessage`.
 
 ## 7. Update message storage queries
 
-The legacy SDK exposed messages through CoreData (`CatapushCoreData.managedObjectContext`, `MessageIP` `NSFetchRequest`, `NSFetchedResultsController` for change tracking). The Multiplatform SDK uses a relational database internally and exposes its contents through `kotlinx.coroutines` `Flow`s, which Swift consumes via SKIE-generated `AsyncSequence` bridges.
+The previous SDK exposed messages through CoreData (`CatapushCoreData.managedObjectContext`, `MessageIP` `NSFetchRequest`, `NSFetchedResultsController` for change tracking). The Multiplatform SDK exposes the local message store through `kotlinx.coroutines` `Flow`s, which Swift consumes as standard `AsyncSequence`s.
 
-**Before** (legacy pod, retrieve all messages):
+**Before** (previous pod, retrieve all messages):
 
 ```swift
 let messages = Catapush.allMessages() // [MessageIP]
@@ -389,7 +389,7 @@ let flow = Catapush.shared.getMessages(
     channel: nil
 )
 
-// Consume it as an AsyncSequence (SKIE-generated bridge):
+// Consume it as a standard AsyncSequence:
 Task {
     for await pagingData in flow {
         // hand `pagingData` to your list adapter
@@ -409,7 +409,7 @@ Task {
 }
 ```
 
-The CoreData-based `NSFetchedResultsController` pattern from the legacy `MessageIP` / `NSPredicate` approach is replaced by collecting the corresponding `Flow`. There is no longer an exported managed object model.
+The CoreData-based `NSFetchedResultsController` pattern from the previous `MessageIP` / `NSPredicate` approach is replaced by collecting the corresponding `Flow`. There is no longer an exported managed object model.
 
 ## 8. Renamed and new APIs to know about
 
@@ -436,7 +436,7 @@ The CoreData-based `NSFetchedResultsController` pattern from the legacy `Message
 * CoreData accessors (`CatapushCoreData.managedObjectContext`, the `MessageIP` entity, the `MESSAGEIP_STATUS` enum) — replaced by `Flow`-based queries on `CatapushMessage`.
 * `[Catapush allMessages]` — replaced by `Catapush.shared.getMessages(cachedInScope:pageSize:channel:)`.
 * The `+sendMessageWithText:` family of 11 overloads — replaced by the single `sendMessage(message:subject:channel:inReplyToMessageId:attachmentUri:callback:)`.
-* The legacy "Manual library integration when using `use_frameworks!`" workaround — Swift Package Manager handles framework-style linkage natively.
+* The previous "Manual library integration when using `use_frameworks!`" workaround — Swift Package Manager handles framework-style linkage natively.
 
 ## API rename quick reference
 
